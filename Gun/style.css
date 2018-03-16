@@ -1,0 +1,93 @@
+.promo{ 
+	width:100%;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-align:center;
+	font-size:16px;
+	color:#fff;
+	border-radius:0px;
+}
+.navbar{
+	border-radius:0px;
+}
+.account{
+	margin-top:50px;
+	cursor:pointer;
+}
+.product-title h1{
+	padding-top: 25px;
+	margin-bottom:20px;
+	padding-left:10px;
+	float:left;
+}
+.product-title img{
+	margin-bottom:20px;
+	margin-top: 20px;
+	height: 100px;
+	width: 100px;
+	float:left;
+}
+.product-title a{
+	color: black;
+}
+
+.navbar-form{
+	padding:0px;
+}
+.form-signin{
+	max-width: 400px;
+    margin: 0 auto;
+}
+.form-horizontal{
+	max-width: 500px;
+    margin: 0 auto;
+	margin-bottom:50px;
+}
+#inputEmail{
+	margin-bottom:10px;
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+    padding: 0px 30px 0;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+@media (max-width: 406px) {
+	.account{
+		margin-top:0px;
+	}
+}
