@@ -78,7 +78,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cryptoDB',
-        'USER': 'timlee',
+        'USER': 'ccadmin',
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
