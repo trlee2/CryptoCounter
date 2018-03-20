@@ -31,47 +31,21 @@
 	<div id="header"></div>
 	<!--Remaining section-->
 	<div class="container">
-            <form class="form-horizontal" role="form">
-                <h3>Registration Form</h3>
-                <div class="form-group">
-                    <label for="firstName" class="col-sm-3 control-label">Full Name</label>
-                    <div class="col-sm-9">
-                        <input type="text" id="firstName" placeholder="Full Name" class="form-control" required="" autofocus>
-                        <span class="help-block">Last Name, First Name, eg.: Smith, Harry</span>
+            <form class="form-horizontal" role="form" method="POST">
+                <h2>Registration Form</h2>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
+                        <div class="col-sm-9">
+                            {{field}}
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Email</label>
-                    <div class="col-sm-9">
-                        <input type="email" id="email" placeholder="Email" required="" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="col-sm-3 control-label">Password</label>
-                    <div class="col-sm-9">
-                        <input type="password" id="password" placeholder="Password" required="" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>
-                    <div class="col-sm-9">
-                        <input type="date" id="birthDate" required="" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="country" class="col-sm-3 control-label">Country</label>
-                    <div class="col-sm-9">
-                        <select id="country" class="form-control" required="">
-                            <option>Bahamas</option>
-                            <option>Cambodia</option>
-                            <option>United States</option>
-                        </select>
-                    </div>
-                </div> <!-- /.form-group -->
+                {% endfor %}<!-- /.form-group -->
 
                 <div class="form-group">
                     <div class="col-sm-9 col-sm-offset-3">
-                        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Create Account</button>
                     </div>
                 </div>
             </form> <!-- /form -->

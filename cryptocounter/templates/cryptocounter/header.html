@@ -1,5 +1,13 @@
 <div class="promo navbar-inverse"> The Market Crashes!!! </div>
-<div class="product-title container"><a href="market"><img src="../../static/logo.png"><h1>Crypto Counter</h1></a> <div class="pull-right account"><a href="login">login</a> | <a href="register">create account</a></div></div>
+<div class="product-title container"><a href="market"><img src="../../static/logo.png"><h1>Crypto Counter</h1></a>
+  <div class="pull-right account">
+    {% if not loggedin %}
+    <a href="login">login</a> | <a href="register">create account</a>
+    {% else %}
+    <a href="logout">logout</a> | <a href="account">account</a>
+    {% endif %}
+  </div>
+</div>
 <nav class="navbar navbar-inverse">
   <div class="container">
 	<div class="navbar-header">
