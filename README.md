@@ -16,7 +16,7 @@ $ psql cryptoDB
 ```
 ```shell
 cryptoDB=# CREATE USER ccadmin;
-cryptoDB=# GRANT ALL ON DATABASE "crytoDB" TO ccadmin;
+cryptoDB=# GRANT ALL ON DATABASE "cryptoDB" TO ccadmin;
 cryptoDB=# \q
 ```
 5. Navigate to the CryptoSite directory and install PostgreSQL Python adapater

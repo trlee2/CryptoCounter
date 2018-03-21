@@ -1,0 +1,196 @@
+import requests
+import json
+#import pprint
+'''
+pip install requests
+pip install django-crontab
+'''
+
+
+'''
+This is the code for updaing the database with new information on 
+the coins and ICO ran by cronjobs fround in the 
+CryptoSite/settings.py file.
+'''
+numCoins = 10; #Top coins from coinMarketCap.com
+coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/?limit="+str(numCoins)
+cryptocompare = "https://min-api.cryptocompare.com/data/"
+icowatchlist = "https://api.icowatchlist.com/public/v1/" 
+
+'''
+A universal function that retrieves the JSON data from each of the
+APIs we are using and returns the raw JSON Object.
+
+@params String api
+@returns	JSON Object	
+'''
+def getAPI(api):
+	res = requests.get(api)
+	data = res.json()
+	return data
+
+'''
+Pulls the list of coins currently being tracked from the database 
+and return an array of their names.
+
+@returns	String[]	
+'''
+def getTrackedCoins():
+	#print("TODO")
+	return ['BTC','ETH']
+
+'''
+Scans the coinmarketcap API for the top numCoins and compares it 
+with the list retrieved from getTrackedCoins(). If a coin is not 
+found on the current list, add the new coin to both the database 
+and the the list of searched coins.
+
+@params		int numCoins
+@returns	void	
+'''
+def setTrackedCoins(numCoins):
+	print("TODO")
+
+'''
+Parse the JSON data from the cryptocompare API and return an array 
+of current prices for each coin.
+
+@params		String[] coinList
+@returns	String[][]	
+'''
+def parseCurrentPrice(coinList):
+	coins = ""
+	for i in range(0, len(coinList)):
+		coins += coinList[i]
+		if(i != len(coinList)-1):
+			coins += ","
+
+	data = getAPI(cryptocompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
+	
+	prices = ""
+	#for i in range(0, len(coinList)):
+
+
+	print(data["BTC"])
+
+'''
+Parse the JSON data from the cryptocompare API and return an array 
+of historical data for each coin on date. 
+
+@params		String[] coinList, int data
+@returns	String[][]
+'''
+def parseOldPrice(coinList, data):
+	print("TODO")
+
+'''
+Parse the JSON data from the icowatchlist API and compare it with 
+the ICO already in the database. Add any ICOs not in our database 
+to our database.
+		
+@returns	String[]	
+'''
+def parseICO():
+
+	data = getAPI(icowatchlist)
+
+	ico_dict = {} 
+
+	for ico in data.keys():
+		for status in data[ico].keys(): 
+			for i in range(0, len(data[ico][status])):
+				ico_inner = {}
+				name = data[ico][status][i]["name"]
+				ico_inner["start_time"] = data[ico][status][i]["start_time"]
+				ico_inner["end_time"] = data[ico][status][i]["end_time"]
+				ico_inner["description"] = data[ico][status][i]["description"]
+				ico_dict[name] = ico_inner
+				#ico_data = [name, start, start_time, end_time, description]
+				
+
+	print(ico_dict) 
+
+
+
+
+
+
+
+'''
+Parse the Twitter API for any new information on the coins being 
+searched and return the array of data.
+
+@params		String[] coinList
+@returns	String[][]	
+'''
+#def parseTwitterLive(coinList):
+#	print("TODO")
+
+'''
+Parse the Twitter API for old information on the coins being 
+searched and return the array of data.
+
+@params		String[] coinList
+@returns	String[][]	
+'''
+#def parseTwitterHistory(coinList):
+#	print("TODO")
+
+'''
+AParse the Google Trends data and return it as an array.
+
+@params		String[] coinList
+@returns	String[][]
+'''
+#def getGoogleTrends(coinList):
+#	print("TODO")
+
+'''
+Parse the general news of cryptocurrencies and return as array.
+
+@params		String[] coinList
+@returns	String[][]	
+'''
+#def getGeneralNews(coinList):
+#	print("TODO")
+
+'''
+Parse the specific news for the coin.
+
+@params		String coin
+@returns	String[][]	
+'''
+#def getCoinNews(coin):
+#	print("TODO")
+
+'''
+A generic function for adding our parsed data to the database.
+
+@params		String table, String[] column, String[] data
+@returns	void	
+'''
+def addToDB(table,column,data):
+	print("TODO")
+
+'''
+A generic function for printing out information, mimics the 
+addToDB function excepts does not write to DB.
+
+@params		String table, String[] column, String[] data
+@returns	void	
+'''
+def addToDB_print(table,column, data):
+	print("TODO")
+
+### TESTING CODE BELOW ###
+## currently just testing calls
+
+def main():
+	
+	parseICO()
+	#clist = getTrackedCoins()
+	#plist = parseCurrentPrice(clist)
+
+	#addToDB_print("test",["testc"],plist)
+
+main()
