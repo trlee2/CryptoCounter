@@ -14,7 +14,8 @@ CryptoSite/settings.py file.
 '''
 numCoins = 10; #Top coins from coinMarketCap.com
 coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/?limit="+str(numCoins)
-cryptocompare = "https://min-api.cryptocompare.com/data/"
+cryptoCompare = "https://min-api.cryptocompare.com/data/"
+icoWatchList = "https://api.icowatchlist.com/public/v1/" 
 
 '''
 A universal function that retrieves the JSON data from each of the
@@ -64,7 +65,7 @@ def parseCurrentPrice(coinList):
 		if(i != len(coinList)-1):
 			coins += ","
 
-	data = getAPI(cryptocompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
+	data = getAPI(cryptoCompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
 	
 	prices = {}
 	for key in data.keys():
@@ -82,7 +83,7 @@ of historical data for each coin on date.
 def parseOldPrice(coinList, date):
 	prices = []
 	for i in range(0, len(coinList)):
-		data = getAPI(cryptocompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
+		data = getAPI(cryptoCompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
 		for key in data.keys():
 			price = {}
 			price["coin_name"] = data[key]
@@ -99,7 +100,24 @@ to our database.
 @returns	String[]	
 '''
 def parseICO():
-	print("TODO")
+
+	data = getAPI(icoWatchList)
+
+	ico_dict = {} 
+
+	for ico in data.keys():
+		for status in data[ico].keys(): 
+			for i in range(0, len(data[ico][status])):
+				ico_inner = {}
+				name = data[ico][status][i]["name"]
+				ico_inner["start_time"] = data[ico][status][i]["start_time"]
+				ico_inner["end_time"] = data[ico][status][i]["end_time"]
+				ico_inner["description"] = data[ico][status][i]["description"]
+				ico_dict[name] = ico_inner
+				#ico_data = [name, start, start_time, end_time, description]
+				
+
+	return ico_dict
 
 '''
 Parse the Twitter API for any new information on the coins being 
@@ -171,12 +189,14 @@ def addToDB_print(table,column, data):
 ## currently just testing calls
 
 def main():
+
 	data = getAPI(coinMarketCap)
 
 	clist = getTrackedCoins()
-	plist = parseCurrentPrice(clist)
+	#plist = parseCurrentPrice(clist)
 	#plist = parseOldPrice(clist,1452680440)
+	parseICO()
 
-	addToDB_print("test",["testc"],plist)
+	#addToDB_print("test",["testc"],plist)
 
 main()

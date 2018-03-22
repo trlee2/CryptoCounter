@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Crypto Counter</title>
+
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="style.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script> 
+	$(function(){
+	  $("#header").load("header.html"); 
+	  $("#footer").load("footer.html");
+	});
+	
+	</script> 
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	
+  </head>
+  <body>  
+	<div id="header">
+			</div>
+	<!--Remaining section-->
+	<div class="container">
+            <form class="form-horizontal" role="form">
+                <h3>Account Management</h3>
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">First Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="firstName" placeholder="Harry" class="form-control" required="" autofocus>
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">Last Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="lastName" placeholder="Johnson" class="form-control" required="" autofocus>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="username" class="col-sm-3 control-label">Username</label>
+                    <div class="col-sm-9">
+                        <input type="email" id="email" placeholder="Username" required="" class="form-control">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" id="email" placeholder="Email" required="" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="currPassword" class="col-sm-3 control-label">Current Password</label>
+                    <div class="col-sm-9">
+                        <input type="newPassword" id="password" placeholder="Current Password" required="" class="form-control">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="NewPassword" class="col-sm-3 control-label">New Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" id="password" placeholder="New Password" required="" class="form-control">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="confirmNewPassword" class="col-sm-3 control-label">Confirm New Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" id="password" placeholder="Confirm Password" required="" class="form-control">
+                    </div>
+                </div>
+				 <!-- /.form-group -->
+                
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Delete Account</button>
+                    </div>
+                </div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<button class="btn btn-lg btn-primary btn-block" type="submit">Update Account</button>
+					</div>
+				</div>
+            </form> <!-- /form -->
+        </div> <!-- ./container -->
+
+	<div id="footer"></div>
+  </body>
+</html>
