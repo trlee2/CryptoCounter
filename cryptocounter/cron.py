@@ -55,7 +55,7 @@ Parse the JSON data from the cryptocompare API and return an array
 of current prices for each coin.
 
 @params		String[] coinList
-@returns	String[][]	
+@returns	Array of coin:price
 '''
 def parseCurrentPrice(coinList):
 	coins = ""
@@ -66,21 +66,30 @@ def parseCurrentPrice(coinList):
 
 	data = getAPI(cryptocompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
 	
-	prices = ""
-	#for i in range(0, len(coinList)):
+	prices = {}
+	for key in data.keys():
+		prices[key] = data[key]["USD"]
 
-
-	print(data["BTC"])
+	return prices
 
 '''
 Parse the JSON data from the cryptocompare API and return an array 
 of historical data for each coin on date. 
 
-@params		String[] coinList, int data
-@returns	String[][]
+@params		String[] coinList, int date
+@returns	Array of coin:price
 '''
-def parseOldPrice(coinList, data):
-	print("TODO")
+def parseOldPrice(coinList, date):
+	prices = []
+	for i in range(0, len(coinList)):
+		data = getAPI(cryptocompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
+		for key in data.keys():
+			price = {}
+			price["coin_name"] = data[key]
+			price["price"] = data[key]["USD"]
+			prices[i] = price
+
+	return prices
 
 '''
 Parse the JSON data from the icowatchlist API and compare it with 
@@ -156,7 +165,7 @@ addToDB function excepts does not write to DB.
 @returns	void	
 '''
 def addToDB_print(table,column, data):
-	print("TODO")
+	print(data)
 
 ### TESTING CODE BELOW ###
 ## currently just testing calls
@@ -166,6 +175,7 @@ def main():
 
 	clist = getTrackedCoins()
 	plist = parseCurrentPrice(clist)
+	#plist = parseOldPrice(clist,1452680440)
 
 	addToDB_print("test",["testc"],plist)
 
