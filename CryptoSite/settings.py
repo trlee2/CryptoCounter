@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cryptocounter.apps.CryptocounterConfig',
-    #'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -106,7 +105,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 #Cron Jobs for the data retrival of api information
-#https://github.com/kraiz/django-crontab
+#http://django-cron.readthedocs.io/en/latest/sample_cron_configurations.html
+#Fixing/Updating this after iteration 1
 '''
 CRONTAB = [
     ('*/5 * * * *', 'cryptocounter.cron.cront'),

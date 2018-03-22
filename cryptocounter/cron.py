@@ -8,9 +8,7 @@ import pprint
  
 '''
 pip install requests
-pip install django-crontab ->does not work with windows
 '''
-#Problem, what if the tracked coins go past numCoins
 
 '''
 This is the code for updaing the database with new information on 
@@ -19,7 +17,7 @@ CryptoSite/settings.py file.
 '''
 numCoins = 10; #Top coins from coinMarketCap.com
 trackedCoins = [] #coins currently being tracked
-coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/?limit="+str(numCoins)
+coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/"
 cryptoCompare = "https://min-api.cryptocompare.com/data/"
 icoWatchList = "https://api.icowatchlist.com/public/v1/" 
 
@@ -39,7 +37,7 @@ def getAPI(api):
 Pulls the list of coins currently being tracked from the database 
 and puts them in the trackedCoins array
 
-@returns	String[]
+@returns	void
 '''
 def getTrackedCoins():
 	db_info = settings.DATABASES["default"]
@@ -58,6 +56,8 @@ def getTrackedCoins():
 	for i in range(0, len(row)):
 		trackedCoins.append(row[i][2])
 
+	conn.close()
+
 '''
 Scans the coinmarketcap API for the top numCoins and compares it 
 with the list retrieved from getTrackedCoins(). If a coin is not 
@@ -67,7 +67,7 @@ and the the list of searched coins.
 @params		int numCoins
 @returns	void	
 '''
-def setTrackedCoins(numCoins):
+def setTrackedCoins():
 	getTrackedCoins() #Make sure we have an updated list
 	trackedLength = len(trackedCoins)
 
@@ -79,7 +79,7 @@ def setTrackedCoins(numCoins):
 		print("I am unable to connect to the db")
 
 	cur = conn.cursor()
-	market = getAPI(coinMarketCap)
+	market = getAPI(coinMarketCap+"?limit="+str(numCoins))
 	for i in range(0, len(market)):
 		if(market[i]["symbol"] not in trackedCoins):
 			#TODO: find true blockchain, fix block_chain (change symbol->name)
@@ -88,6 +88,7 @@ def setTrackedCoins(numCoins):
 
 	conn.commit()
 	getTrackedCoins() #Get updated list
+	conn.close()
 
 '''
 Parse the JSON data from the cryptocompare API and return an array 
@@ -99,18 +100,24 @@ of current prices for each coin.
 def parseCurrentPrice(coinList):
 	coins = ""
 	for i in range(0, len(coinList)):
-		coins += coinList[i]
+		if(coinList[i] == "MIOTA"):
+			coins += "IOTA"
+		else:
+			coins += coinList[i]
 		if(i != len(coinList)-1):
 			coins += ","
 
 	data = getAPI(cryptoCompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
-	market = getAPI(coinMarketCap) #TODO:fix to include all not just top 10
+	market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
 
 	prices = ["price"]
 	for key in data.keys():
 		want = {}
 		for i in range(0, len(market)):
-			if(key == market[i]["symbol"]):
+			if(key == "IOTA" and market[i]["symbol"] == "MIOTA"):
+				want = market[i]
+				break;
+			elif(key == market[i]["symbol"]):
 				want = market[i]
 				break;
 
@@ -118,7 +125,7 @@ def parseCurrentPrice(coinList):
 		price["ticker"] = key
 		price["price"] = data[key]["USD"]
 		price["circ-supply"] = want["available_supply"]
-		price["percent_change"] = want
+		price["percent_change"] = want["percent_change_24h"]
 		price["market_cap"] = want["market_cap_usd"]
 		price["date"] = want["last_updated"]
 		prices.append(price)
@@ -132,11 +139,11 @@ of historical data for each coin on date.
 @params		String[] coinList, int date
 @returns	Array of coin:price
 '''
-def parseOldPrice(coinList, date):
+def parseHistoricalPrice(coinList, date):
 	prices = ["price"]
 	for i in range(0, len(coinList)):
 		data = getAPI(cryptoCompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
-		market = getAPI(coinMarketCap) #TODO:fix to include all not just top 10
+		market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
 
 		for key in data.keys():
 			want = {}
@@ -172,7 +179,7 @@ def parseICO():
 			for i in range(0, len(data[ico][status])):
 				ico_inner = {}
 				ico_inner["ico_name"] = data[ico][status][i]["name"]
-				ico_inner["search_terms"] = ""
+				ico_inner["search_terms"] = '["'+data[ico][status][i]["name"]+'"]' #TODO: update this with more terms, ticker if found
 				ico_inner["start"] = data[ico][status][i]["start_time"]
 				ico_inner["end"] = data[ico][status][i]["end_time"]
 				ico_inner["description"] = data[ico][status][i]["description"]
@@ -244,26 +251,58 @@ addToDB function excepts does not write to DB.
 @returns	void	
 '''
 def addToDB_print(table,column, data):
-	pprint.pprint(data)
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	cur = conn.cursor()
+	
+	cur.execute("SELECT * FROM cryptocounter_coin")
+	row = cur.fetchall()
+
+	info = data[0] #price,ico
+	print(row)
+	for j in range(0, len(row)):
+		for i in range(1,len(data)):
+			if(row[j][2] == data[i]["ticker"]):
+				#print("true") I hate MIOTA!!
+				break;
+			#else:
+			#	print("false")
+
+
+### Commands to be called by CRON ###
+
+#setTrackedCoins() -> once a day
+
+def updateCurrentPrice(): #-> once every ___ ( 5 min or hour)
+	#trackedCoins should live
+	plist = parseCurrentPrice(trackedCoins)
+	addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
+
+def updateHistoricalPrice(date):#-> once upon first boot or every time we need info that can not be found
+	#trackedCoins should live
+	plist = parseHistoricalPrice(trackedCoins,date)
+	addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
+
+def updateICO():#-> once every ___ (day or week)
+	plist = parseICO()
+	addToDB_print("cruptocounter_ico",["ico_id","ico_name","start","end","description","search_terms"],plist)
+
 
 ### TESTING CODE BELOW ###
 ## currently just testing calls
 
 def main():
+	setTrackedCoins()
+	updateCurrentPrice()
+	#updateHistoricalPrice(1521746133)
+	#updateICO()
+	
 
-	#data = getAPI(coinMarketCap)
-
-	#getTrackedCoins()
-	#plist = parseCurrentPrice(clist)
-	#plist = parseOldPrice(trackedCoins,1452680440)
-	#plist = parseICO()
-
-	#addToDB_print("test",["testc"],plist)
-
-	setTrackedCoins(numCoins)
-	print(trackedCoins)
-
-def cront():
+def testcron():
 	print("testing cron jobs")
 
 main()
