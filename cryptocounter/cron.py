@@ -1,11 +1,16 @@
 import requests
 import json
-#import pprint
+import psycopg2
+import sys
+sys.path.insert(0, '../CryptoSite/')
+import settings
+import pprint
+ 
 '''
 pip install requests
-pip install django-crontab
+pip install django-crontab ->does not work with windows
 '''
-
+#Problem, what if the tracked coins go past numCoins
 
 '''
 This is the code for updaing the database with new information on 
@@ -13,6 +18,7 @@ the coins and ICO ran by cronjobs fround in the
 CryptoSite/settings.py file.
 '''
 numCoins = 10; #Top coins from coinMarketCap.com
+trackedCoins = [] #coins currently being tracked
 coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/?limit="+str(numCoins)
 cryptoCompare = "https://min-api.cryptocompare.com/data/"
 icoWatchList = "https://api.icowatchlist.com/public/v1/" 
@@ -31,13 +37,26 @@ def getAPI(api):
 
 '''
 Pulls the list of coins currently being tracked from the database 
-and return an array of their names.
+and puts them in the trackedCoins array
 
-@returns	String[]	
+@returns	String[]
 '''
 def getTrackedCoins():
-	#print("TODO")
-	return ['BTC','ETH']
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	cur = conn.cursor()
+	
+	cur.execute("SELECT * FROM cryptocounter_coin")
+	row = cur.fetchall()
+
+	#clear the entire global array for new data
+	del trackedCoins[:]
+	for i in range(0, len(row)):
+		trackedCoins.append(row[i][2])
 
 '''
 Scans the coinmarketcap API for the top numCoins and compares it 
@@ -49,7 +68,26 @@ and the the list of searched coins.
 @returns	void	
 '''
 def setTrackedCoins(numCoins):
-	print("TODO")
+	getTrackedCoins() #Make sure we have an updated list
+	trackedLength = len(trackedCoins)
+
+	#Use the list of tracked coins and compare with coinmarketcap
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	cur = conn.cursor()
+	market = getAPI(coinMarketCap)
+	for i in range(0, len(market)):
+		if(market[i]["symbol"] not in trackedCoins):
+			#TODO: find true blockchain, fix block_chain (change symbol->name)
+			cur.execute("INSERT INTO cryptocounter_coin (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["symbol"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
+			trackedLength +=1
+
+	conn.commit()
+	getTrackedCoins() #Get updated list
 
 '''
 Parse the JSON data from the cryptocompare API and return an array 
@@ -66,10 +104,24 @@ def parseCurrentPrice(coinList):
 			coins += ","
 
 	data = getAPI(cryptoCompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
-	
-	prices = {}
+	market = getAPI(coinMarketCap) #TODO:fix to include all not just top 10
+
+	prices = ["price"]
 	for key in data.keys():
-		prices[key] = data[key]["USD"]
+		want = {}
+		for i in range(0, len(market)):
+			if(key == market[i]["symbol"]):
+				want = market[i]
+				break;
+
+		price = {}
+		price["ticker"] = key
+		price["price"] = data[key]["USD"]
+		price["circ-supply"] = want["available_supply"]
+		price["percent_change"] = want
+		price["market_cap"] = want["market_cap_usd"]
+		price["date"] = want["last_updated"]
+		prices.append(price)
 
 	return prices
 
@@ -81,14 +133,26 @@ of historical data for each coin on date.
 @returns	Array of coin:price
 '''
 def parseOldPrice(coinList, date):
-	prices = []
+	prices = ["price"]
 	for i in range(0, len(coinList)):
 		data = getAPI(cryptoCompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
+		market = getAPI(coinMarketCap) #TODO:fix to include all not just top 10
+
 		for key in data.keys():
+			want = {}
+			for j in range(0, len(market)):
+				if(key == market[i]["symbol"]):
+					want = market[i]
+					break;
+
 			price = {}
-			price["coin_name"] = data[key]
+			price["ticker"] = key
 			price["price"] = data[key]["USD"]
-			prices[i] = price
+			price["circ-supply"] = want["available_supply"]
+			price["percent_change"] = -1
+			price["market_cap"] = want["market_cap_usd"]
+			price["date"] = date
+			prices.append(price)
 
 	return prices
 
@@ -100,22 +164,19 @@ to our database.
 @returns	String[]	
 '''
 def parseICO():
-
 	data = getAPI(icoWatchList)
 
-	ico_dict = {} 
-
+	ico_dict = ["ico"]
 	for ico in data.keys():
 		for status in data[ico].keys(): 
 			for i in range(0, len(data[ico][status])):
 				ico_inner = {}
-				name = data[ico][status][i]["name"]
-				ico_inner["start_time"] = data[ico][status][i]["start_time"]
-				ico_inner["end_time"] = data[ico][status][i]["end_time"]
+				ico_inner["ico_name"] = data[ico][status][i]["name"]
+				ico_inner["search_terms"] = ""
+				ico_inner["start"] = data[ico][status][i]["start_time"]
+				ico_inner["end"] = data[ico][status][i]["end_time"]
 				ico_inner["description"] = data[ico][status][i]["description"]
-				ico_dict[name] = ico_inner
-				#ico_data = [name, start, start_time, end_time, description]
-				
+				ico_dict.append(ico_inner)
 
 	return ico_dict
 
@@ -183,20 +244,26 @@ addToDB function excepts does not write to DB.
 @returns	void	
 '''
 def addToDB_print(table,column, data):
-	print(data)
+	pprint.pprint(data)
 
 ### TESTING CODE BELOW ###
 ## currently just testing calls
 
 def main():
 
-	data = getAPI(coinMarketCap)
+	#data = getAPI(coinMarketCap)
 
-	clist = getTrackedCoins()
+	#getTrackedCoins()
 	#plist = parseCurrentPrice(clist)
-	#plist = parseOldPrice(clist,1452680440)
-	parseICO()
+	#plist = parseOldPrice(trackedCoins,1452680440)
+	#plist = parseICO()
 
 	#addToDB_print("test",["testc"],plist)
+
+	setTrackedCoins(numCoins)
+	print(trackedCoins)
+
+def cront():
+	print("testing cron jobs")
 
 main()

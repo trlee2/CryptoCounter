@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cryptocounter.apps.CryptocounterConfig',
+    #'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -104,6 +105,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Cron Jobs for the data retrival of api information
+#https://github.com/kraiz/django-crontab
+'''
+CRONTAB = [
+    ('*/5 * * * *', 'cryptocounter.cron.cront'),
+]
+'''
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
