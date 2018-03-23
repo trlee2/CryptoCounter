@@ -23,6 +23,10 @@ cryptoDB=# \q
 ```shell
 $ pip install psycopg2
 ```
+5a. Install other libraries for the background tasks to run
+```shell
+$ pip install requests
+```
 6. Build the tables
 ```shell
 $ python manage.py migrate

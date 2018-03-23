@@ -116,10 +116,10 @@ def parseCurrentPrice(coinList):
 		for i in range(0, len(market)):
 			if(key == "IOTA" and market[i]["symbol"] == "MIOTA"):
 				want = market[i]
-				break;
+				break
 			elif(key == market[i]["symbol"]):
 				want = market[i]
-				break;
+				break
 
 		price = {}
 		price["ticker"] = key
@@ -142,15 +142,21 @@ of historical data for each coin on date.
 def parseHistoricalPrice(coinList, date):
 	prices = ["price"]
 	for i in range(0, len(coinList)):
-		data = getAPI(cryptoCompare+"pricehistorical?fsym="+coinList[i]+"&tsyms=USD&ts="+str(date))
+		cList = coinList[i]
+		if(coinList[i] == "MIOTA"):
+			cList = "IOTA"
+		data = getAPI(cryptoCompare+"pricehistorical?fsym="+cList+"&tsyms=USD&ts="+str(date))
 		market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
 
 		for key in data.keys():
 			want = {}
 			for j in range(0, len(market)):
-				if(key == market[i]["symbol"]):
-					want = market[i]
-					break;
+				if(key == "IOTA" and market[j]["symbol"] == "MIOTA"):
+					want = market[j]
+					break
+				elif(key == market[j]["symbol"]):
+					want = market[j]
+					break
 
 			price = {}
 			price["ticker"] = key
@@ -263,14 +269,19 @@ def addToDB_print(table,column, data):
 	row = cur.fetchall()
 
 	info = data[0] #price,ico
-	print(row)
+	pprint.pprint(data)
 	for j in range(0, len(row)):
-		for i in range(1,len(data)):
-			if(row[j][2] == data[i]["ticker"]):
-				#print("true") I hate MIOTA!!
-				break;
-			#else:
-			#	print("false")
+		coin_id = -1
+		for i in range(1,len(data)):			
+			if(data[i]["ticker"] == "IOTA" and row[j][2] == "MIOTA"):
+				coin_id = row[j][0]
+				break			
+			elif(row[j][2] == data[i]["ticker"]):
+				coin_id = row[j][0]
+				break
+		#print(data[i].keys())
+		#cur.execute("INSERT INTO "+table+" (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["symbol"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
+			
 
 
 ### Commands to be called by CRON ###
