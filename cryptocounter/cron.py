@@ -4,7 +4,9 @@ import psycopg2
 import sys
 sys.path.insert(0, '../CryptoSite/')
 import settings
+import datetime
 import pprint
+#from django_cron import CronJobBase, Schedule
  
 '''
 pip install requests
@@ -82,8 +84,8 @@ def setTrackedCoins():
 	market = getAPI(coinMarketCap+"?limit="+str(numCoins))
 	for i in range(0, len(market)):
 		if(market[i]["symbol"] not in trackedCoins):
-			#TODO: find true blockchain, fix block_chain (change symbol->name)
-			cur.execute("INSERT INTO cryptocounter_coin (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["symbol"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
+			#TODO: find true blockchain
+			cur.execute("INSERT INTO cryptocounter_coin (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["name"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
 			trackedLength +=1
 
 	conn.commit()
@@ -101,7 +103,7 @@ def parseCurrentPrice(coinList):
 	coins = ""
 	for i in range(0, len(coinList)):
 		if(coinList[i] == "MIOTA"):
-			coins += "IOTA"
+			coins += "IOT"
 		else:
 			coins += coinList[i]
 		if(i != len(coinList)-1):
@@ -110,11 +112,11 @@ def parseCurrentPrice(coinList):
 	data = getAPI(cryptoCompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
 	market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
 
-	prices = ["price"]
+	prices = []
 	for key in data.keys():
 		want = {}
 		for i in range(0, len(market)):
-			if(key == "IOTA" and market[i]["symbol"] == "MIOTA"):
+			if(key == "IOT" and market[i]["symbol"] == "MIOTA"):
 				want = market[i]
 				break
 			elif(key == market[i]["symbol"]):
@@ -122,9 +124,12 @@ def parseCurrentPrice(coinList):
 				break
 
 		price = {}
-		price["ticker"] = key
+		if(key == "IOT"):
+			price["ticker"] = "IOTA"
+		else:
+			price["ticker"] = key
 		price["price"] = data[key]["USD"]
-		price["circ-supply"] = want["available_supply"]
+		price["circ_supply"] = want["available_supply"]
 		price["percent_change"] = want["percent_change_24h"]
 		price["market_cap"] = want["market_cap_usd"]
 		price["date"] = want["last_updated"]
@@ -140,18 +145,18 @@ of historical data for each coin on date.
 @returns	Array of coin:price
 '''
 def parseHistoricalPrice(coinList, date):
-	prices = ["price"]
+	prices = []
 	for i in range(0, len(coinList)):
 		cList = coinList[i]
 		if(coinList[i] == "MIOTA"):
-			cList = "IOTA"
+			cList = "IOT"
 		data = getAPI(cryptoCompare+"pricehistorical?fsym="+cList+"&tsyms=USD&ts="+str(date))
 		market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
 
 		for key in data.keys():
 			want = {}
 			for j in range(0, len(market)):
-				if(key == "IOTA" and market[j]["symbol"] == "MIOTA"):
+				if(key == "IOT" and market[j]["symbol"] == "MIOTA"):
 					want = market[j]
 					break
 				elif(key == market[j]["symbol"]):
@@ -159,14 +164,17 @@ def parseHistoricalPrice(coinList, date):
 					break
 
 			price = {}
-			price["ticker"] = key
+			if(key == "IOT"):
+				price["ticker"] = "IOTA"
+			else:
+				price["ticker"] = key
 			price["price"] = data[key]["USD"]
-			price["circ-supply"] = want["available_supply"]
+			price["circ_supply"] = want["available_supply"]
 			price["percent_change"] = -1
 			price["market_cap"] = want["market_cap_usd"]
 			price["date"] = date
 			prices.append(price)
-
+	#if we have time, update percent_change
 	return prices
 
 '''
@@ -179,7 +187,7 @@ to our database.
 def parseICO():
 	data = getAPI(icoWatchList)
 
-	ico_dict = ["ico"]
+	ico_dict = []
 	for ico in data.keys():
 		for status in data[ico].keys(): 
 			for i in range(0, len(data[ico][status])):
@@ -198,7 +206,7 @@ Parse the Twitter API for any new information on the coins being
 searched and return the array of data.
 
 @params		String[] coinList
-@returns	String[][]	
+@returns	int	
 '''
 #def parseTwitterLive(coinList):
 #	print("TODO")
@@ -208,7 +216,7 @@ Parse the Twitter API for old information on the coins being
 searched and return the array of data.
 
 @params		String[] coinList
-@returns	String[][]	
+@returns	int	
 '''
 #def parseTwitterHistory(coinList):
 #	print("TODO")
@@ -217,7 +225,7 @@ searched and return the array of data.
 AParse the Google Trends data and return it as an array.
 
 @params		String[] coinList
-@returns	String[][]
+@returns	int
 '''
 #def getGoogleTrends(coinList):
 #	print("TODO")
@@ -226,7 +234,7 @@ AParse the Google Trends data and return it as an array.
 Parse the general news of cryptocurrencies and return as array.
 
 @params		String[] coinList
-@returns	String[][]	
+@returns	int	
 '''
 #def getGeneralNews(coinList):
 #	print("TODO")
@@ -235,27 +243,12 @@ Parse the general news of cryptocurrencies and return as array.
 Parse the specific news for the coin.
 
 @params		String coin
-@returns	String[][]	
+@returns	int	
 '''
 #def getCoinNews(coin):
 #	print("TODO")
 
-'''
-A generic function for adding our parsed data to the database.
 
-@params		String table, String[] column, String[] data
-@returns	void	
-'''
-def addToDB(table,column,data):
-	print("TODO")
-
-'''
-A generic function for printing out information, mimics the 
-addToDB function excepts does not write to DB.
-
-@params		String table, String[] column, String[] data
-@returns	void	
-'''
 def addToDB_print(table,column, data):
 	db_info = settings.DATABASES["default"]
 	try:
@@ -270,18 +263,11 @@ def addToDB_print(table,column, data):
 
 	info = data[0] #price,ico
 	pprint.pprint(data)
-	for j in range(0, len(row)):
-		coin_id = -1
-		for i in range(1,len(data)):			
-			if(data[i]["ticker"] == "IOTA" and row[j][2] == "MIOTA"):
-				coin_id = row[j][0]
-				break			
-			elif(row[j][2] == data[i]["ticker"]):
-				coin_id = row[j][0]
-				break
-		#print(data[i].keys())
-		#cur.execute("INSERT INTO "+table+" (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["symbol"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
-			
+
+
+		
+	conn.commit()
+	conn.close()	
 
 
 ### Commands to be called by CRON ###
@@ -289,9 +275,44 @@ def addToDB_print(table,column, data):
 #setTrackedCoins() -> once a day
 
 def updateCurrentPrice(): #-> once every ___ ( 5 min or hour)
-	#trackedCoins should live
+	#trackedCoins should live	
 	plist = parseCurrentPrice(trackedCoins)
-	addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
+
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	cur = conn.cursor()
+	
+	cur.execute("SELECT coin_id, ticker FROM cryptocounter_coin")
+	DBcoins = cur.fetchall()
+
+	pprint.pprint(plist[9])
+	for i in range(0, len(DBcoins)):
+		coin_id = DBcoins[i][0]
+		if(DBcoins[i][1] == "MIOTA"):
+			ticker = "IOTA"
+		else:
+			ticker = DBcoins[i][1]
+
+		#print(ticker)
+		for data in plist:
+			if(data["ticker"] == ticker):
+				#pprint.pprint(data)
+				print(str(datetime.datetime.fromtimestamp(int(data["date"]))))
+				#cur.execute("INSERT INTO cryptocounter_price (date, price, coin_id_id, circ_supply, market_cap, percent_change) VALUES("+str(datetime.date.fromtimestamp(int(data["date"])))+","+str(data["price"])+","+str(coin_id)+","+str(data["circ_supply"])+","+str(data["market_cap"])+","+str(data["percent_change"])+")")
+				break
+		
+
+	cur.execute("SELECT * FROM cryptocounter_price")
+	pprint.pprint(cur.fetchall())
+		
+	#conn.commit()
+	#conn.close()	
+
+	#addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
 
 def updateHistoricalPrice(date):#-> once upon first boot or every time we need info that can not be found
 	#trackedCoins should live
@@ -300,7 +321,40 @@ def updateHistoricalPrice(date):#-> once upon first boot or every time we need i
 
 def updateICO():#-> once every ___ (day or week)
 	plist = parseICO()
-	addToDB_print("cruptocounter_ico",["ico_id","ico_name","start","end","description","search_terms"],plist)
+
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	cur = conn.cursor()
+	
+	cur.execute("SELECT ico_id, ico_name FROM cryptocounter_ico")
+	DBcoins = cur.fetchall()
+
+	pprint.pprint(plist[9])
+	for i in range(0, len(DBcoins)):
+		coin_id = DBcoins[i][0]
+		if(DBcoins[i][1] == "MIOTA"):
+			ticker = "IOTA"
+		else:
+			ticker = DBcoins[i][1]
+
+		#print(ticker)
+		for data in plist:
+			if(data["ticker"] == ticker):
+				#print(data)
+				#cur.execute("INSERT INTO cryptocounter_price (date, price, coin_id_id, circ_supply, market_cap, percent_change) VALUES("+data["date"]+","+str(data["price"])+","+str(coin_id)+","+str(data["circ_supply"])+","+str(data["market_cap"])+","+str(data["percent_change"])+")")
+				break
+		
+
+	cur.execute("SELECT * FROM cryptocounter_ico")
+	pprint.pprint(cur.fetchall())
+		
+	#conn.commit()
+	#conn.close()	
+	#addToDB_print("cruptocounter_ico",["ico_id","ico_name","start","end","description","search_terms"],plist)
 
 
 ### TESTING CODE BELOW ###
@@ -308,10 +362,30 @@ def updateICO():#-> once every ___ (day or week)
 
 def main():
 	setTrackedCoins()
+	#print(coinList)
 	updateCurrentPrice()
 	#updateHistoricalPrice(1521746133)
 	#updateICO()
-	
+	#truncateDB()
+
+
+	#truncate all coin and social DB for a clean start
+def truncateDB():
+	db_info = settings.DATABASES["default"]
+	try:
+		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
+	except:
+		print("I am unable to connect to the db")
+
+	tableList = ["coin","ico","overallsocial","price","socialcoin","socialico"]
+	cur = conn.cursor()
+	for item in tableList:
+		cur.execute("TRUNCATE TABLE cryptocounter_"+item)
+		print("Truncated "+item)
+
+	conn.commit()
+	conn.close()
+
 
 def testcron():
 	print("testing cron jobs")

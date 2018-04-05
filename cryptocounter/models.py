@@ -6,7 +6,7 @@ class Coin(models.Model):
     coin_id = models.IntegerField(primary_key=True, default=0)
     coin_name = models.CharField(unique=True, max_length=200)
     ticker = models.CharField(unique=True, max_length=10)
-    block_chain = models.CharField(max_length=10)
+    block_chain = models.CharField(max_length=200)
     search_terms = models.TextField(max_length=500)
 
 class Ico(models.Model):
