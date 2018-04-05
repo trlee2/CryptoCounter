@@ -16,12 +16,16 @@ $ psql cryptoDB
 ```
 ```shell
 cryptoDB=# CREATE USER ccadmin;
-cryptoDB=# GRANT ALL ON DATABASE "crytoDB" TO ccadmin;
+cryptoDB=# GRANT ALL ON DATABASE "cryptoDB" TO ccadmin;
 cryptoDB=# \q
 ```
 5. Navigate to the CryptoSite directory and install PostgreSQL Python adapater
 ```shell
 $ pip install psycopg2
+```
+5a. Install other libraries for the background tasks to run
+```shell
+$ pip install requests
 ```
 6. Build the tables
 ```shell

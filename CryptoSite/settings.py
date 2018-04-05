@@ -104,6 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Cron Jobs for the data retrival of api information
+#http://django-cron.readthedocs.io/en/latest/sample_cron_configurations.html
+#Fixing/Updating this after iteration 1
+'''
+CRONTAB = [
+    ('*/5 * * * *', 'cryptocounter.cron.cront'),
+]
+'''
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
