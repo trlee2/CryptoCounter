@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm, UserLoginForm
 
+from .models import WatchItem
+
 # Create your views here.
 def market(request):
     return render(request, 'cryptocounter/market.html')
@@ -17,7 +19,20 @@ def socialTrends(request):
     return render(request, 'cryptocounter/trends.html')
 
 def watchlist(request):
-    return render(request, 'cryptocounter/watchlist.html')
+    # make sure user is logged in
+    if request.user.is_authenticated:
+        # get username
+        username = request.user.username
+        # get user's watched coins
+        #watchCoins = WatchItem.objects.filter(username=username).values('coin_id')
+        # get coin pricing date
+        #watchPrices = Price.objects.filter()
+        return render(request, 'cryptocounter/watchlist.html')
+    else:
+        return HttpResponseRedirect('login')
+
+def coinDetails(request):
+    return render(request, 'cryptocounter/coinTemplate.html')
 
 def login(request):
     if request.method == 'POST':
@@ -78,6 +93,9 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'cryptocounter/register.html', {'form' : form})
+
+def account(request):
+    return render(request, 'cryptocounter/account.html')
 
 def header(request):
     loggedin = request.user.is_authenticated
