@@ -11,6 +11,8 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('logout', auth_views.logout, {'next_page': 'market'}, name='logout'),
     path('register', views.register, name='register'),
+    path('account', views.account, name='account'),
     path('header.html', views.header, name='header'),
     path('footer.html', views.footer, name='footer'),
+    path('coinDetails', views.coinDetails, name='coinDetails'),
 ]

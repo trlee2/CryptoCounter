@@ -23,7 +23,11 @@
 		<li class="market"><a href="market">Market</a></li>
 		<li class="ico"><a href="ico">ICO</a></li>
 		<li class="trends"><a href="socialtrends">Social Trends</a></li>
+    {% if not loggedin %}
+		<li class="watchlist"><a href="login">My Watchlist</a></li>
+    {% else %}
 		<li class="watchlist"><a href="watchlist">My Watchlist</a></li>
+    {% endif %}
 	  </ul>
 	  <div class="col-sm-3 col-md-3 pull-right">
         <form class="navbar-form" role="search">
