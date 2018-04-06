@@ -36,18 +36,26 @@ def getAPI(api):
 	return data
 
 '''
-Pulls the list of coins currently being tracked from the database 
-and puts them in the trackedCoins array
-
-@returns	void
+A helper function to connect to the DB
+@return conn
 '''
-def getTrackedCoins():
+def getConnected():
 	db_info = settings.DATABASES["default"]
 	try:
 		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
 	except:
 		print("I am unable to connect to the db")
 
+	return conn;
+
+'''
+Pulls the list of coins currently being tracked from the database 
+and puts them in the trackedCoins array
+
+@returns	void
+'''
+def getTrackedCoins():
+	conn = getConnected()
 	cur = conn.cursor()
 	
 	cur.execute("SELECT * FROM cryptocounter_coin")
@@ -74,19 +82,17 @@ def setTrackedCoins():
 	trackedLength = len(trackedCoins)
 
 	#Use the list of tracked coins and compare with coinmarketcap
-	db_info = settings.DATABASES["default"]
-	try:
-		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
-	except:
-		print("I am unable to connect to the db")
-
+	conn = getConnected()
 	cur = conn.cursor()
 	market = getAPI(coinMarketCap+"?limit="+str(numCoins))
 	for i in range(0, len(market)):
 		if(market[i]["symbol"] not in trackedCoins):
 			#TODO: find true blockchain
-			cur.execute("INSERT INTO cryptocounter_coin (coin_id, coin_name, ticker, block_chain, search_terms) VALUES ("+str(trackedLength)+",'"+market[i]["name"]+"','"+market[i]["symbol"]+"','"+market[i]["name"]+"','[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]')")
-			trackedLength +=1
+			cname = market[i]["name"]
+			ticker = market[i]["symbol"]
+			bc = market[i]["name"]
+			terms = "[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]"
+			cur.execute("INSERT INTO cryptocounter_coin (coin_name, ticker, block_chain, search_terms) VALUES('{}','{}','{}','{}')".format(cname,ticker,bc,terms))
 
 	conn.commit()
 	getTrackedCoins() #Get updated list
@@ -248,124 +254,87 @@ Parse the specific news for the coin.
 #def getCoinNews(coin):
 #	print("TODO")
 
+### Commands to be called by CRON ###
 
-def addToDB_print(table,column, data):
-	db_info = settings.DATABASES["default"]
-	try:
-		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
-	except:
-		print("I am unable to connect to the db")
-
+def addPriceInfo(plist):
+	conn = getConnected()
 	cur = conn.cursor()
 	
-	cur.execute("SELECT * FROM cryptocounter_coin")
-	row = cur.fetchall()
+	cur.execute("SELECT coin_id, ticker FROM cryptocounter_coin")
+	DBcoins = cur.fetchall()
 
-	info = data[0] #price,ico
-	pprint.pprint(data)
+	for i in range(0, len(DBcoins)):
+		coin_id = DBcoins[i][0]
+		if(DBcoins[i][1] == "MIOTA"):
+			ticker = "IOTA"
+		else:
+			ticker = DBcoins[i][1]
 
-
+		for data in plist:
+			if(data["ticker"] == ticker):
+				dt = str(datetime.datetime.fromtimestamp(int(data["date"])))
+				p = str(data["price"])
+				cid = str(coin_id)
+				cs = str(data["circ_supply"])
+				mc = str(data["market_cap"])
+				pc = str(data["percent_change"])
+				cur.execute("INSERT INTO cryptocounter_price (date, price, coin_id_id, circ_supply, market_cap, percent_change) VALUES('{}',{},{},{},{},{})".format(dt,p,cid,cs,mc,pc))
+				break
 		
 	conn.commit()
-	conn.close()	
-
-
-### Commands to be called by CRON ###
+	conn.close()
 
 #setTrackedCoins() -> once a day
 
 def updateCurrentPrice(): #-> once every ___ ( 5 min or hour)
 	#trackedCoins should live	
 	plist = parseCurrentPrice(trackedCoins)
-
-	db_info = settings.DATABASES["default"]
-	try:
-		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
-	except:
-		print("I am unable to connect to the db")
-
-	cur = conn.cursor()
-	
-	cur.execute("SELECT coin_id, ticker FROM cryptocounter_coin")
-	DBcoins = cur.fetchall()
-
-	pprint.pprint(plist[9])
-	for i in range(0, len(DBcoins)):
-		coin_id = DBcoins[i][0]
-		if(DBcoins[i][1] == "MIOTA"):
-			ticker = "IOTA"
-		else:
-			ticker = DBcoins[i][1]
-
-		#print(ticker)
-		for data in plist:
-			if(data["ticker"] == ticker):
-				#pprint.pprint(data)
-				print(str(datetime.datetime.fromtimestamp(int(data["date"]))))
-				#cur.execute("INSERT INTO cryptocounter_price (date, price, coin_id_id, circ_supply, market_cap, percent_change) VALUES("+str(datetime.date.fromtimestamp(int(data["date"])))+","+str(data["price"])+","+str(coin_id)+","+str(data["circ_supply"])+","+str(data["market_cap"])+","+str(data["percent_change"])+")")
-				break
+	addPriceInfo(plist)
 		
-
-	cur.execute("SELECT * FROM cryptocounter_price")
-	pprint.pprint(cur.fetchall())
-		
-	#conn.commit()
-	#conn.close()	
-
-	#addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
 
 def updateHistoricalPrice(date):#-> once upon first boot or every time we need info that can not be found
 	#trackedCoins should live
 	plist = parseHistoricalPrice(trackedCoins,date)
-	addToDB_print("cryptocounter_price",["id","date","price","coin_id_id","circ_supply","market_cap","percent_change"],plist)
+	addPriceInfo(plist)
 
 def updateICO():#-> once every ___ (day or week)
 	plist = parseICO()
-
-	db_info = settings.DATABASES["default"]
-	try:
-		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
-	except:
-		print("I am unable to connect to the db")
-
+	conn = getConnected()
 	cur = conn.cursor()
-	
-	cur.execute("SELECT ico_id, ico_name FROM cryptocounter_ico")
-	DBcoins = cur.fetchall()
 
-	pprint.pprint(plist[9])
-	for i in range(0, len(DBcoins)):
-		coin_id = DBcoins[i][0]
-		if(DBcoins[i][1] == "MIOTA"):
-			ticker = "IOTA"
-		else:
-			ticker = DBcoins[i][1]
+	cur.execute("SELECT ico_name FROM cryptocounter_ico")
+	DBico = cur.fetchall()
 
-		#print(ticker)
-		for data in plist:
-			if(data["ticker"] == ticker):
-				#print(data)
-				#cur.execute("INSERT INTO cryptocounter_price (date, price, coin_id_id, circ_supply, market_cap, percent_change) VALUES("+data["date"]+","+str(data["price"])+","+str(coin_id)+","+str(data["circ_supply"])+","+str(data["market_cap"])+","+str(data["percent_change"])+")")
-				break
+	for data in plist:
+		if(data["ico_name"] not in DBico):
+			pprint.pprint(data)
+
+			#dt = str(datetime.datetime.fromtimestamp(int(data["date"])))
+			n = str(data["ico_name"])
+			#s = str(datetime.datetime.strptime(data["start"],'%Y-%m-%d %H:%M:%S'))
+			#e = str(datetime.datetime.strptime(data["end"],'%Y-%m-%d %H:%M:%S'))
+			s = str(data["start"])+"-00"
+			e = str(data["end"])+"-00"
+			d = str(data["description"])
+			st = str(data["search_terms"])
+			tmp = "INSERT INTO cryptocounter_ico (ico_name, start, end, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st)
+			print(tmp)
+			cur.execute(tmp)
+
 		
-
-	cur.execute("SELECT * FROM cryptocounter_ico")
-	pprint.pprint(cur.fetchall())
-		
-	#conn.commit()
-	#conn.close()	
-	#addToDB_print("cruptocounter_ico",["ico_id","ico_name","start","end","description","search_terms"],plist)
+	conn.commit()
+	conn.close()
 
 
 ### TESTING CODE BELOW ###
 ## currently just testing calls
 
 def main():
-	setTrackedCoins()
+	#setTrackedCoins()
 	#print(coinList)
-	updateCurrentPrice()
+	#updateCurrentPrice()
 	#updateHistoricalPrice(1521746133)
-	#updateICO()
+	updateICO()
 	#truncateDB()
 
 
@@ -377,11 +346,12 @@ def truncateDB():
 	except:
 		print("I am unable to connect to the db")
 
-	tableList = ["coin","ico","overallsocial","price","socialcoin","socialico"]
+	tableList = ["coin", "price","ico","overallsocial","socialcoin","socialico"]
 	cur = conn.cursor()
 	for item in tableList:
-		cur.execute("TRUNCATE TABLE cryptocounter_"+item)
+		cur.execute("TRUNCATE TABLE cryptocounter_"+item+" RESTART IDENTITY CASCADE")
 		print("Truncated "+item)
+	cur.execute("ALTER SEQUENCE cryptocounter_coin_coin_id_seq RESTART 1")
 
 	conn.commit()
 	conn.close()

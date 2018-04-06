@@ -21,7 +21,7 @@ class Price(models.Model):
     coin_id = models.ForeignKey(Coin, on_delete=models.CASCADE)
     date = models.DateTimeField()
     price = models.DecimalField(max_digits=20, decimal_places=2, default=0)
-    circ_supply = models.IntegerField(default=0)
+    circ_supply = models.BigIntegerField(default=0)
     percent_change = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     market_cap = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
