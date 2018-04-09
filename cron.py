@@ -2,14 +2,15 @@ import requests
 import json
 import psycopg2
 import sys
-sys.path.insert(0, '../CryptoSite/')
-import settings
+import CryptoSite.settings as settings
 import datetime
 import pprint
-#from django_cron import CronJobBase, Schedule
+#from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
  
 '''
 pip install requests
+pip install apscheduler
 '''
 
 '''
@@ -303,39 +304,50 @@ def updateICO():#-> once every ___ (day or week)
 	cur = conn.cursor()
 
 	cur.execute("SELECT ico_name FROM cryptocounter_ico")
-	DBico = cur.fetchall()
+	DBico_raw = cur.fetchall()
+
+	#format DBico
+	DBico = []
+	for i in range(0,len(DBico_raw)):
+		DBico.append(DBico_raw[i][0])
 
 	for data in plist:
 		if(data["ico_name"] not in DBico):
-			pprint.pprint(data)
 
-			#dt = str(datetime.datetime.fromtimestamp(int(data["date"])))
 			n = str(data["ico_name"])
-			#s = str(datetime.datetime.strptime(data["start"],'%Y-%m-%d %H:%M:%S'))
-			#e = str(datetime.datetime.strptime(data["end"],'%Y-%m-%d %H:%M:%S'))
 			s = str(data["start"])+"-00"
 			e = str(data["end"])+"-00"
 			d = str(data["description"])
 			st = str(data["search_terms"])
-			tmp = "INSERT INTO cryptocounter_ico (ico_name, start, end, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st)
-			print(tmp)
-			cur.execute(tmp)
+			cur.execute("INSERT INTO cryptocounter_ico (ico_name, ico_start, ico_end, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st))
 
 		
 	conn.commit()
 	conn.close()
 
+def testcron():
+	print(datetime.datetime.now())
+
+### CRON CALLS ###
+#sched = BackgroundScheduler()
+sched = BlockingScheduler()
+sched.add_job(setTrackedCoins, 'interval', days=1)
+sched.add_job(updateCurrentPrice, 'interval', minutes=1)
+sched.add_job(updateICO, 'interval', days=1)
+#sched.add_job(testcron, 'interval', minutes=1*2)
 
 ### TESTING CODE BELOW ###
 ## currently just testing calls
 
-def main():
-	#setTrackedCoins()
-	#print(coinList)
+def main(): #setup for initial run
+	setTrackedCoins()
 	#updateCurrentPrice()
-	#updateHistoricalPrice(1521746133)
-	updateICO()
+	#from this time to now
+	historicalTime = 1521746133
+	updateHistoricalPrice(historicalTime)
+	#updateICO()
 	#truncateDB()
+	#sched.start() #start cron
 
 
 	#truncate all coin and social DB for a clean start
@@ -352,12 +364,11 @@ def truncateDB():
 		cur.execute("TRUNCATE TABLE cryptocounter_"+item+" RESTART IDENTITY CASCADE")
 		print("Truncated "+item)
 	cur.execute("ALTER SEQUENCE cryptocounter_coin_coin_id_seq RESTART 1")
+	cur.execute("ALTER SEQUENCE cryptocounter_ico_ico_id_seq RESTART 1")
+	cur.execute("ALTER SEQUENCE cryptocounter_price_id_seq RESTART 1")
 
 	conn.commit()
 	conn.close()
 
 
-def testcron():
-	print("testing cron jobs")
-
-main()
+main() #setup init calls

@@ -12,8 +12,8 @@ class Coin(models.Model):
 class Ico(models.Model):
     ico_id = models.AutoField(primary_key=True, default=0)
     ico_name = models.CharField(unique=True, max_length=200)
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    ico_start = models.DateTimeField()
+    ico_end = models.DateTimeField()
     description = models.TextField()
     search_terms = models.TextField(max_length=500)
 
