@@ -8,12 +8,16 @@ from .forms import UserRegistrationForm, UserLoginForm
 
 from .models import WatchItem
 
+from .utils import getCurrPrices, getIcoInfo, getCoinDetails
+
 # Create your views here.
 def market(request):
-    return render(request, 'cryptocounter/market.html')
+    prices = getCurrPrices()
+    return render(request, 'cryptocounter/market.html', {'prices':prices})
 
 def ico(request):
-    return render(request, 'cryptocounter/ico.html')
+    icoData = getIcoInfo()
+    return render(request, 'cryptocounter/ico.html', {'icos':icoData})
 
 def socialTrends(request):
     return render(request, 'cryptocounter/trends.html')
@@ -29,10 +33,11 @@ def watchlist(request):
         #watchPrices = Price.objects.filter()
         return render(request, 'cryptocounter/watchlist.html')
     else:
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('/login')
 
-def coinDetails(request):
-    return render(request, 'cryptocounter/coinTemplate.html')
+def coinDetails(request, cname):
+    coinData = getCoinDetails(cname)
+    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData})
 
 def login(request):
     if request.method == 'POST':
@@ -51,7 +56,7 @@ def login(request):
                 # log the user in
                 auth_login(request, user)
                 # redirect to watchlist
-                return HttpResponseRedirect('watchlist')
+                return HttpResponseRedirect('/watchlist')
             else:
                 raise forms.ValidationError('Username or password incorrect')
     else:
@@ -89,7 +94,7 @@ def register(request):
                 user = authenticate(username = username, password = password)
                 auth_login(request, user)
                 # redirect to watchlist
-                return HttpResponseRedirect('watchlist')
+                return HttpResponseRedirect('/watchlist')
     else:
         form = UserRegistrationForm()
     return render(request, 'cryptocounter/register.html', {'form' : form})

@@ -3,17 +3,17 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Coin(models.Model):
-    coin_id = models.AutoField(primary_key=True, default=0)
+    coin_id = models.AutoField(primary_key=True)
     coin_name = models.CharField(unique=True, max_length=200)
     ticker = models.CharField(unique=True, max_length=10)
     block_chain = models.CharField(max_length=200)
     search_terms = models.TextField(max_length=500)
 
 class Ico(models.Model):
-    ico_id = models.AutoField(primary_key=True, default=0)
+    ico_id = models.AutoField(primary_key=True)
     ico_name = models.CharField(unique=True, max_length=200)
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    startDate = models.DateTimeField()
+    endDate = models.DateTimeField()
     description = models.TextField()
     search_terms = models.TextField(max_length=500)
 
