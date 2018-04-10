@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Crypto Counter</title>
+  <title>Crypto Counter</title>
 
-    <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="../../static/css/style.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
-	$(function(){
-	  $("#header").load("header.html");
-	  $("#footer").load("footer.html");
-	  $(window).on('load', function() {
-		$('.nav.navbar-nav li.ico').addClass('active');
-	  });
+  $(function(){
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
+    $(window).on('load', function() {
+      $('.nav.navbar-nav li.ico').addClass('active');
+    });
 
-	});
+  });
 
-	</script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
-  </head>
-  <body>
-	<div id="header"></div>
-	<!--Remaining section-->
-	<div class="container">
-      <div class="page-header">
-        <h3>Initial Coin Offerings</h3>
-      </div>
+</head>
+<body>
+  <div id="header"></div>
+  <!--Remaining section-->
+  <div class="container">
+    <div class="page-header">
+      <h3>Initial Coin Offerings</h3>
     </div>
+  </div>
 
-    <table class="icoTable">
+  <table class="icoTable">
     <tr>
       <th>Days Remaining</th>
       <th>Start</th>
@@ -49,36 +49,18 @@
       <th>Description</th>
     </tr>
 
+    {% for i in icos %}
     <tr>
-  	<td>3</td>
-      <td>MM/DD/YY</td>
-      <td>MM/DD/YY</td>
-      <td><a href="coinDetails">Template Coin1</a></td>
-      <td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
+      <td>NOW</td>
+      <td>{{i.startDate}}</td>
+      <td>{{i.endDate}}</td>
+      <td><a href="coindetails">{{i.ico_name}}</a></td>
+      <td>{{i.description}}</td>
     </tr>
-      <tr>
-  	<td>3</td>
-      <td>MM/DD/YY</td>
-      <td>MM/DD/YY</td>
-      <td><a href="coinDetails">Template Coin2</a></td>
-      <td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-    </tr>
-      <tr>
-  	<td>3</td>
-      <td>MM/DD/YY</td>
-      <td>MM/DD/YY</td>
-      <td><a href="coinDetails">Template Coin3</a></td>
-      <td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-    </tr>
-      <tr>
-  	<td>3</td>
-      <td>MM/DD/YY</td>
-      <td>MM/DD/YY</td>
-      <td><a href="coinDetails">Template Coin4</a></td>
-      <td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-    </tr>
+    {% endfor %}
+
   </table>
 
-	<div id="footer"></div>
-  </body>
+  <div id="footer"></div>
+</body>
 </html>

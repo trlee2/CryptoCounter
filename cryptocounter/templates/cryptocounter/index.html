@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Crypto Counter</title>
+  <title>Crypto Counter</title>
 
-    <!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	<link rel="stylesheet" href="../../static/css/style.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script>
-	$(function(){
-	  $("#header").load("header.html");
-	  $("#footer").load("footer.html");
-	});
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script>
+  $(function(){
+    $("#header").load("header.html");
+    $("#footer").load("footer.html");
+  });
 
-	</script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
-  </head>
-  <body>
-	<div id="header"></div>
-	<!--Remaining section-->
-	<div class="container">
+</head>
+<body>
+  <div id="header"></div>
+  <!--Remaining section-->
+  <div class="container">
 
-	  <form class="form-signin", method="POST">
-        <h2 class="form-signin-heading">Login</h2>
-        {% csrf_token %}
-        {% for field in form %}
-            <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
-                {{field}}
-        {% endfor %}
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
-	</div>
+    <form class="form-signin", method="POST">
+      <h2 class="form-signin-heading">Login</h2>
+      {% csrf_token %}
+      {% for field in form %}
+      <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
+      {{field}}
+      {% endfor %}
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+  </div>
 
-	<div id="footer"></div>
-  </body>
+  <div id="footer"></div>
+</body>
 </html>
