@@ -369,7 +369,7 @@ def updateICO():#-> once every day
 			e = str(data["end"])+"-00"
 			d = str(data["description"])
 			st = str(data["search_terms"])
-			cur.execute("INSERT INTO cryptocounter_ico (ico_name, ico_start, ico_end, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st))
+			cur.execute("INSERT INTO cryptocounter_ico (ico_name, startDate, endDate, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st))
 
 		
 	conn.commit()
