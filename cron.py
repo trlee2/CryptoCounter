@@ -392,7 +392,7 @@ def main(test=True): #setup for initial run
 	setTrackedCoins()
 	if(test):
 		print("[Cron is adding Historical Prices]")
-	updateHistoricalPrice(3)	#184,numbers of days
+	updateHistoricalPrice(184)	#184,numbers of days
 	if(test):
 		print("[Cron is adding today's price]")
 	updateCurrentPrice()
