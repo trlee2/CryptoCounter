@@ -6,7 +6,6 @@ import CryptoSite.settings as settings
 import datetime
 import time
 import pprint
-#from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
  
 '''
@@ -24,6 +23,8 @@ CryptoSite/settings.py file.
 '''
 numCoins = 10; #Top coins from coinMarketCap.com
 trackedCoins = [] #coins currently being tracked
+mode = []
+historyDays = 184 #default is 6 months = 184 days
 coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/"
 cryptoCompare = "https://min-api.cryptocompare.com/data/"
 icoWatchList = "https://api.icowatchlist.com/public/v1/" 
@@ -375,42 +376,18 @@ def updateICO():#-> once every day
 	conn.commit()
 	conn.close()
 
-def testcron():
-	print(datetime.datetime.now())
-
 ### CRON CALLS ###
-#sched = BackgroundScheduler()
 sched = BlockingScheduler(timezone="UTC")
 sched.add_job(setTrackedCoins, 'cron', hour=0, minute=0)
 sched.add_job(updateCurrentPrice, 'cron', hour=0, minute=5)
 sched.add_job(updateICO, 'cron', hour=0,minute=10)
 #sched.add_job(testcron, 'interval', minutes=1*2)
 
-def main(test=True): #setup for initial run
-	if(test):
-		print("[Cron is setting tracked coins]")
-	setTrackedCoins()
-	if(test):
-		print("[Cron is adding Historical Prices]")
-	updateHistoricalPrice(184)	#184,numbers of days
-	if(test):
-		print("[Cron is adding today's price]")
-	updateCurrentPrice()
-	if(test):
-		print("[Cron is updating ICO data]")
-	updateICO()
-	if(test):
-		print("[Cron is starting cronjobs]")
-	if(test):
-		#sched.start() #start cron
-		pass
-
 
 
 ### TESTING CODE BELOW ###
-
 #truncate all coin and social DB for a clean start
-def truncateDB(text=True):
+def truncateDB(test=False):
 	db_info = settings.DATABASES["default"]
 	try:
 		conn = psycopg2.connect("dbname="+db_info["NAME"]+" user="+db_info["USER"]+" host="+db_info["HOST"]+" password="+db_info["PASSWORD"])
@@ -421,7 +398,7 @@ def truncateDB(text=True):
 	cur = conn.cursor()
 	for item in tableList:
 		cur.execute("TRUNCATE TABLE cryptocounter_"+item+" RESTART IDENTITY CASCADE")
-		if(text):
+		if(not(test)):
 			print("Truncated "+item)
 	cur.execute("ALTER SEQUENCE cryptocounter_coin_coin_id_seq RESTART 1")
 	cur.execute("ALTER SEQUENCE cryptocounter_ico_ico_id_seq RESTART 1")
@@ -431,12 +408,24 @@ def truncateDB(text=True):
 	conn.close()
 
 
-if __name__ == '__main__':
-	main() #setup init calls
-	#truncateDB() #reset tables
-
-
-
+def main(test=False): #setup for initial run
+	if(not(test)):
+		print("[Cron is setting tracked coins]")
+		setTrackedCoins()
+		print("[Cron is adding Historical Prices]")
+		updateHistoricalPrice(historyDays)	#184,numbers of days
+		print("[Cron is adding today's price]")
+		updateCurrentPrice()
+		print("[Cron is updating ICO data]")
+		updateICO()
+		if("c" in mode):
+			print("[Cron is starting cronjobs]")
+			sched.start() #start cron
+	else:
+		setTrackedCoins()
+		updateHistoricalPrice(7)	#184,numbers of days
+		updateCurrentPrice()
+		updateICO()
 
 
 
@@ -451,14 +440,14 @@ class TestCron(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		truncateDB(False)
+		truncateDB(True)
 
 	def setUp(self):
 		del trackedCoins[:]
 		numCoins = 10
 
 	def tearDown(self):
-		truncateDB(False)
+		truncateDB(True)
 		numCoins = 10
 
 	#testing API calls
@@ -608,3 +597,52 @@ class TestCron(unittest.TestCase):
 		main(False)
 		main(False)
 	'''
+
+import getopt
+
+fullCmdArguments = sys.argv
+argumentList = fullCmdArguments[1:]
+unixOptions = "hce:rtp:"
+gnuOptions = ["help", "cron", "cronEnd=" "reset", "test", "history="]
+
+try:  
+    arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
+except getopt.error as err:  
+    # output error, and return with an error code
+    print (str(err))
+    sys.exit(2)
+	
+for currentArgument, currentValue in arguments:
+	if currentArgument in ("-h", "--help"):
+		print("----------------------------------------------------------------------------")
+		print("long argument       short argument    definition")  
+		print("----------------------------------------------------------------------------")
+		print("--help                 -h             Show this help message and exit")
+		print("--cron                 -c             Enable cron mode")
+		print("--reset                -r             Truncate all tables that cron interacts with")
+		print("--test                 -t             Start xUnit tests")
+		print("--history [days]       -p             Sets the number of days to go back in history")
+		print("                                 		Default: 184 days (6 months)")
+		print("-----------------------------------------------------------------------------")
+		sys.exit(0)
+	elif currentArgument in ("-c", "--cron"):
+		print ("Enabling cron mode")
+		mode.append("c")
+	elif currentArgument in ("-r", "--reset"):
+		print ("Resetting tables cron interacts with")
+		truncateDB(False) #reset tables
+		sys.exit(0)
+	elif currentArgument in ("-t", "--test"):
+		print ("Starting xUnit tests")
+		sys.argv = [sys.argv[0], "-v"]
+		unittest.main()
+		sys.exit(0)
+	elif currentArgument in ("-p", "--history"):
+		if(not(currentValue.isdigit())):
+			print("option --history requires an int argument")
+			sys.exit(1)
+		print (("Changed the default history log to {} days").format(int(currentValue)))
+		historyDays = int(currentValue)
+
+if __name__ == '__main__':
+	main() #setup init calls

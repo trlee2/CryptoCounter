@@ -37,3 +37,17 @@ $ python manage.py migrate
 $ python manage.py runserver
 $ python cron.py
 ```
+8. Cron can also take arguments when ran
+```shell
+$ python cron.py -h
+----------------------------------------------------------------------------
+long argument   short argument  definition
+----------------------------------------------------------------------------
+--help             -h             Show this help message and exit
+--cron             -c             Enable cron mode
+--reset            -r             Truncate all tables that cron interacts with
+--test             -t             Start xUnit tests
+--history [days]   -p             Sets the number of days to go back in history
+                                    Default: 184 days (6 months)
+-----------------------------------------------------------------------------
+```
