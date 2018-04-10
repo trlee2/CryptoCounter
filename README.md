@@ -26,12 +26,14 @@ $ pip install psycopg2
 5a. Install other libraries for the background tasks to run
 ```shell
 $ pip install requests
+$ pip install apscheduler
 ```
 6. Build the tables
 ```shell
 $ python manage.py migrate
 ```
-7. Start built-in Python Server
+7. Start built-in Python Server and run cron
 ```shell
 $ python manage.py runserver
+$ python cron.py
 ```
