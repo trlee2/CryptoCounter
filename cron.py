@@ -369,7 +369,7 @@ def updateICO():#-> once every day
 			e = str(data["end"])+"-00"
 			d = str(data["description"])
 			st = str(data["search_terms"])
-			cur.execute("INSERT INTO cryptocounter_ico (ico_name, startDate, endDate, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st))
+			cur.execute("INSERT INTO cryptocounter_ico (ico_name, startdate, enddate, description, search_terms) VALUES('{}','{}','{}','{}','{}')".format(n,s,e,d,st))
 
 		
 	conn.commit()
@@ -392,7 +392,7 @@ def main(test=True): #setup for initial run
 	setTrackedCoins()
 	if(test):
 		print("[Cron is adding Historical Prices]")
-	updateHistoricalPrice(184)	#184,numbers of days
+	updateHistoricalPrice(3)	#184,numbers of days
 	if(test):
 		print("[Cron is adding today's price]")
 	updateCurrentPrice()
