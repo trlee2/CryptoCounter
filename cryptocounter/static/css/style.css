@@ -189,3 +189,18 @@ code {
     border: 1px solid #ccc;
     border-top: none;
 }
+
+.tableHead {
+	margin-left: 10%;
+	
+}
+hr {
+	width: 80%;
+}
+
+value {
+	color: #38ACEC;
+	margin-left: 10px;
+	margin-right: 50px;
+}
+
