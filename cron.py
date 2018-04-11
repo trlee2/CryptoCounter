@@ -602,8 +602,8 @@ import getopt
 
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]
-unixOptions = "hce:rtp:"
-gnuOptions = ["help", "cron", "cronEnd=" "reset", "test", "history="]
+unixOptions = "hce:rtp:d"
+gnuOptions = ["help", "cron", "cronEnd=" "reset", "test", "history=", "debug"]
 
 try:  
     arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
@@ -623,6 +623,7 @@ for currentArgument, currentValue in arguments:
 		print("--test                 -t             Start xUnit tests")
 		print("--history [days]       -p             Sets the number of days to go back in history")
 		print("                                 		Default: 184 days (6 months)")
+		print("--debug                -d             Debug mode of testing as we code")
 		print("-----------------------------------------------------------------------------")
 		sys.exit(0)
 	elif currentArgument in ("-c", "--cron"):
@@ -643,6 +644,12 @@ for currentArgument, currentValue in arguments:
 			sys.exit(1)
 		print (("Changed the default history log to {} days").format(int(currentValue)))
 		historyDays = int(currentValue)
+	elif currentArgument in ("-d", "--debug"):
+		print("Currently in debug mode:")
+		### Add testing code below ###
+
+		### End of testing code ###
+		sys.exit(0)
 
 if __name__ == '__main__':
 	main() #setup init calls
