@@ -26,10 +26,12 @@
   });
   </script>
   <script>
-
+var chart;
+var chart1;
   window.onload = function () {
 
     var chart = new CanvasJS.Chart("chartContainer", {
+	  height: 370, width: 800,
       title: {
         text: "Social Trends"
       },
@@ -218,6 +220,7 @@
 	
 	
     var chart1 = new CanvasJS.Chart("chartContainer2", {
+	  height: 370, width: 800,
       title: {
         text: "Social Trends"
       },
@@ -350,12 +353,10 @@
       }
       chart1.render();
     }
-	//chart1.resize()
   }
   </script>
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
 
 </head>
 <body>
@@ -370,12 +371,10 @@
       <button class="tablinks" onclick="openTab(event, '1Year')">Yearly</button>
     </div>
     <div id="AllTime" class="tabcontent">
-      <div class="trendGraph" id="chartContainer" style="height: 370px; width: 600px;"></div>
+      <div class="trendGraph" id="chartContainer" style="height: 370px; width: 800px;"></div>
     </div>
     <div id="1Year" class="tabcontent">
-	
-      <div class="trendGraph" id="chartContainer2" style="height: 370px; width: 600px;"></div>
-	  
+      <div class="trendGraph" id="chartContainer2" style="height: 370px; width: 800px;"></div> 
     </div>
 
 
@@ -420,10 +419,9 @@ function openTab2(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+		
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
-</script>
-<script>
 	
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
@@ -438,6 +436,8 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
 </script>
