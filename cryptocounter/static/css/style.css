@@ -186,17 +186,19 @@ code {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
+	text-align: center;
 }
 
 /* Style the buttons that are used to open the tab content */
 .tab button {
     background-color: inherit;
-    float: left;
+    float: none;
     border: none;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
+	text-align: center;
 }
 
 /* Change background color of buttons on hover */
@@ -213,7 +215,8 @@ code {
 .tabcontent {
     display: none;
     padding: 6px 12px;
-    border: 1px solid #ccc;
+    /*border: 1px solid #ccc;*/
+	border: none;
     border-top: none;
 }
 
