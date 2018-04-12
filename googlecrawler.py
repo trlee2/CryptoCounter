@@ -23,7 +23,7 @@ def parseGoogleTrends(keyword):
 				                         "tbs":"li:1"}
 				                )
 
-				soup = BeautifulSoup(r.text,"lxml")
+				soup = BeautifulSoup(r.text, "html.parser")
 
 				print (i+":" + soup.find('div',{'id':'resultStats'}).text)
 

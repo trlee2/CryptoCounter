@@ -31,7 +31,8 @@ icoWatchList = "https://api.icowatchlist.com/public/v1/"
 twitter = ""
 google = ""
 newsapi = "https://newsapi.org/v2/everything?q="
-newsapi_keys = ["&apiKey=e9f31afd6dd54e14930244b5f52cdc45","&apiKey=7f9ed31f06e7459b8aa3121e437b30d3","&apiKey=4ff3432a39664cb0a21e24e63caef9bf","&apiKey=2df0257ef60d402c812c70d47c172612"]
+newsapi_keys = ["&apiKey=e9f31afd6dd54e14930244b5f52cdc45","&apiKey=7f9ed31f06e7459b8aa3121e437b30d3","&apiKey=4ff3432a39664cb0a21e24e63caef9bf","&apiKey=2df0257ef60d402c812c70d47c172612","&apiKey=8b211b2c69064b05a69b21989ee7e1ef","&apiKey=12ecd0af2710410dbb6a8b982cbe1f70","&apiKey=1f625b75875340b094da51d2b0c49d1a",
+"&apiKey=5e37b20fc557425aaa9ab746931d28a3"]
 newsapi_key = 0
 
 '''
@@ -43,6 +44,7 @@ APIs we are using and returns the raw JSON Object.
 '''
 def getAPI(api):
 	res = requests.get(api)
+	res.raise_for_status()
 	data = res.json()
 	return data
 
