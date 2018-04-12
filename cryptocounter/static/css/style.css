@@ -133,6 +133,20 @@ coinStatValue {
 	margin-left: 0px;
 	margin-right: 0px;
 }
+@media screen and (max-width: 600px) {
+	
+	.coinStat {	
+		width:60%;
+		margin-left: 20%;
+		text-align: center;
+		border: solid 4px;
+		border-radius: 10px;	
+		font-size: 18px;
+		height: 100px;
+		margin-bottom: 25px;
+		padding: 2%;
+	}
+}
 
 /* Custom page CSS
 -------------------------------------------------- */
