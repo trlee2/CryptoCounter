@@ -3,6 +3,10 @@ import pprint
 
 from newsapi import NewsApiClient
 
+'''
+pip install newsapi
+'''
+
 coin = ['bitcoin','eth','ripple']
 
 def parseCoinNews(keyword):

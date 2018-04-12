@@ -1,5 +1,9 @@
 import tweepy
 
+'''
+pip install tweepy, see CS labs filesS
+'''
+
 consumer_key = "6toOrdLOCWsNo9sg5qgsQm9uX"
 consumer_secret = "MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl"
 access_token = "983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE"

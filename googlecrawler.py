@@ -2,6 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import argparse
 
+'''
+pip install bs4 -> does not work
+'''
+
 #parser = argparse.ArgumentParser(description='Get Google Count.')
 #parser.add_argument('word', help='word to count')
 #args = parser.parse_args()
