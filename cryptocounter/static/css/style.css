@@ -115,14 +115,23 @@ th.marketTable{
 }
 .coinStat {
 	text-align: center;
-	font-size: 32px;
-	border: solid 1px;
-	width: 20%;
+	border: solid 4px;
+	border-radius: 10px;	
+	font-size: 18px;
+	width: 30%;
+	height: 100px;
+	min-width: 150px;
+	min-height: 100px;
 	margin-bottom: 25px;
-	margin-left: 6.66666665%;
-	margin-right: 6.66666665%;
-
-
+	padding: 2%;
+	margin-left: 1.66666%;
+	margin-right: 1.66666%
+	
+}
+coinStatValue {
+	color: #38ACEC;
+	margin-left: 0px;
+	margin-right: 0px;
 }
 
 /* Custom page CSS
