@@ -232,12 +232,31 @@
       <h2>{{coin.coin_name}} ({{coin.ticker}})  :  ${{coin.price}}</h2>
     </div>
     <div class="coinStatRow row col-sm-12">
-      <div class="col-sm-4 coinStat"><h3>Market Cap:</h3>${{coin.market_cap}}</div>
-      <div class="col-sm-4 coinStat"><h3>Percent Change:</h3>{% widthratio coin.percent_change 1 100 %}%</div>
-      <div class="col-sm-4 coinStat"><h3>Circulating Supply:</h3>{{coin.circ_supply}}</div>
-    </div>
-  </div>
-
+			<div class="col-sm-4 col-xs-12 coinStat">
+				<div>
+					Market Cap: 
+				</div>
+				<div>
+					<coinStatValue>${{coin.market_cap}}</coinStatValue>
+				</div>
+			</div>
+			<div class="col-sm-4 col-xs-12 coinStat">
+				<div>
+					Percent Change: 
+				</div>
+				<div>
+					<coinStatValue>{% widthratio coin.percent_change 1 100 %}%</coinStatValue>
+				</div>
+			</div>
+			<div class="col-sm-4 col-xs-12 coinStat">
+				<div>
+					Circulating Supply: 
+				</div>
+				<div>
+					<coinStatValue>{{coin.circ_supply}}</coinStatValue>
+				</div>
+			</div>
+		</div>
   <div class="trendGraph" id="chartContainer"></div>
 
   <div class="container">
