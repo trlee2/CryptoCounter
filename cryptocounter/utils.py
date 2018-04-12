@@ -1,7 +1,7 @@
 # functions to retrieve data to provide to templates
 from .models import Coin, Price, Ico
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # return the current pricing info of all coins for market page
 def getCurrPrices():
@@ -30,9 +30,20 @@ def getCurrPrices():
 
 # return all ICO data for ico page
 def getIcoInfo():
+    data = []
     # get all tracked ICOs
     icoData = Ico.objects.all()
-    return icoData
+    currTime = datetime.now(timezone.utc)
+    for ico in icoData:
+        # determine if ICO is live
+        try:
+            daysRemaining = ico.enddate.date() - currTime.date()
+            temp = {'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
+            'ico_name':ico.ico_name, 'description':ico.description}
+            data.append(temp)
+        except:
+            print('No ICO data found')
+    return data
 
 # return all data on an individual coin
 def getCoinDetails(cname):
@@ -60,3 +71,29 @@ def getCoinDetails(cname):
     'circ_supply':coinPrice.circ_supply, 'percent_change':coinPrice.percent_change, 'market_cap':coinPrice.market_cap}
 
     return coinData
+
+# return all data on an individual ICO
+def getIcoDetails(iname):
+    # get ICO info
+    try:
+        ico = Ico.objects.get(ico_name=iname)
+    except:
+        print('ICO does not exist in database')
+
+    # get the coin's current price
+    currTime = datetime.now(timezone.utc)
+
+    # determine if ICO is live
+    try:
+        daysRemaining = ico.enddate.date() - currTime.date()
+        temp = {'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
+        'ico_name':ico.ico_name, 'description':ico.description}
+    except:
+        print('No ICO data found')
+
+    # TODO: get ICO's social trends
+
+    # send back the relevant info
+    icoData = temp
+
+    return icoData

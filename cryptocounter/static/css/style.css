@@ -32,7 +32,7 @@
 	margin-bottom:20px;
 	margin-top: 20px;
 	height: 100px;
-	width: 100px;
+	width: 600px;
 	float:left;
 }
 .product-title a{
@@ -120,7 +120,7 @@ th.marketTable{
 .coinStat {
 	text-align: center;
 	border: solid 4px;
-	border-radius: 10px;	
+	border-radius: 10px;
 	font-size: 18px;
 	width: 30%;
 	height: 100px;
@@ -130,7 +130,7 @@ th.marketTable{
 	padding: 2%;
 	margin-left: 1.66666%;
 	margin-right: 1.66666%
-	
+
 }
 coinStatValue {
 	color: #38ACEC;
@@ -138,13 +138,13 @@ coinStatValue {
 	margin-right: 0px;
 }
 @media screen and (max-width: 600px) {
-	
-	.coinStat {	
+
+	.coinStat {
 		width:80%;
 		margin-left: 10%;
 		text-align: center;
 		border: solid 4px;
-		border-radius: 10px;	
+		border-radius: 10px;
 		font-size: 18px;
 		height: 100px;
 		margin-bottom: 25px;
@@ -219,7 +219,7 @@ code {
 
 .tableHead {
 	margin-left: 10%;
-	
+
 }
 hr {
 	width: 80%;
@@ -230,4 +230,3 @@ value {
 	margin-left: 10px;
 	margin-right: 10px;
 }
-

@@ -17,4 +17,5 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('account', views.account, name='account'),
     path('coindetails/<str:cname>/', views.coinDetails, name='coindetails'),
+    path('icodetails/<str:iname>/', views.icoDetails, name='icodetails'),
 ]

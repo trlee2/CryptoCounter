@@ -43,18 +43,18 @@
   <table class="icoTable">
     <tr>
       <th>Days Remaining</th>
-      <th>Start</th>
-      <th>End</th>
+      <th>Start Date</th>
+      <th>End Date</th>
       <th>Name</th>
       <th>Description</th>
     </tr>
 
     {% for i in icos %}
     <tr>
-      <td>NOW</td>
-      <td>{{i.startDate}}</td>
-      <td>{{i.endDate}}</td>
-      <td><a href="coindetails">{{i.ico_name}}</a></td>
+      <td>{{i.daysRemaining.days}}</td>
+      <td>{{i.startdate.date}}</td>
+      <td>{{i.enddate.date}}</td>
+      <td><a href="icodetails/{{i.ico_name}}">{{i.ico_name}}</a></td>
       <td>{{i.description}}</td>
     </tr>
     {% endfor %}

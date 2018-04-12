@@ -8,7 +8,7 @@ from .forms import UserRegistrationForm, UserLoginForm
 
 from .models import WatchItem
 
-from .utils import getCurrPrices, getIcoInfo, getCoinDetails
+from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails
 
 # Create your views here.
 def market(request):
@@ -38,6 +38,10 @@ def watchlist(request):
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)
     return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData})
+
+def icoDetails(request, iname):
+    icoData = getIcoDetails(iname)
+    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData})
 
 def login(request):
     if request.method == 'POST':
