@@ -24,9 +24,9 @@
       $('.nav.navbar-nav li.trends').addClass('active');
     });
   });
-
   </script>
   <script>
+
   window.onload = function () {
 
     var chart = new CanvasJS.Chart("chartContainer", {
@@ -47,7 +47,7 @@
         verticalAlign: "top",
         horizontalAlign: "center",
         dockInsidePlotArea: true,
-        itemclick: toogleDataSeries
+        itemclick: toGgleDataSeries
       },
       data: [{
         type:"line",
@@ -206,9 +206,8 @@
         ]
       }]
     });
-    chart.render();
-
-    function toogleDataSeries(e){
+    chart.render();	
+	    function toGgleDataSeries(e){
       if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
         e.dataSeries.visible = false;
       } else{
@@ -216,7 +215,9 @@
       }
       chart.render();
     }
-    var chart = new CanvasJS.Chart("chartContainer2", {
+	
+	
+    var chart1 = new CanvasJS.Chart("chartContainer2", {
       title: {
         text: "Social Trends"
       },
@@ -339,7 +340,7 @@
         ]
       }]
     });
-    chart.render();
+    chart1.render();
 
     function toogleDataSeries(e){
       if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
@@ -347,8 +348,9 @@
       } else{
         e.dataSeries.visible = true;
       }
-      chart.render();
+      chart1.render();
     }
+	//chart1.resize()
   }
   </script>
   <!-- Latest compiled and minified JavaScript -->
@@ -368,10 +370,12 @@
       <button class="tablinks" onclick="openTab(event, '1Year')">Yearly</button>
     </div>
     <div id="AllTime" class="tabcontent">
-      <div class="trendGraph" id="chartContainer"></div>
+      <div class="trendGraph" id="chartContainer" style="height: 370px; width: 600px;"></div>
     </div>
     <div id="1Year" class="tabcontent">
-      <div class="trendGraph" id="chartContainer2"></div>
+	
+      <div class="trendGraph" id="chartContainer2" style="height: 370px; width: 600px;"></div>
+	  
     </div>
 
 
