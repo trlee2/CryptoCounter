@@ -47,7 +47,7 @@
         verticalAlign: "top",
         horizontalAlign: "center",
         dockInsidePlotArea: true,
-        itemclick: toogleDataSeries
+        itemclick: toggleDataSeries
       },
       data: [{
         type:"line",
@@ -208,7 +208,7 @@
     });
     chart.render();
 
-    function toogleDataSeries(e){
+    function toggleDataSeries(e){
       if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
         e.dataSeries.visible = false;
       } else{
