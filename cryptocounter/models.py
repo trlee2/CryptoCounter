@@ -29,20 +29,23 @@ class SocialCoin(models.Model):
     coin_id = models.ForeignKey(Coin, on_delete=models.CASCADE)
     date = models.DateTimeField()
     num_tweets = models.IntegerField(default=0)
-    num_searches = models.IntegerField(default=0)
+    num_subs = models.IntegerField(default=0)
+    num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
 
 class SocialIco(models.Model):
     ico_id = models.ForeignKey(Ico, on_delete=models.CASCADE)
     date = models.DateTimeField()
     num_tweets = models.IntegerField(default=0)
-    num_searches = models.IntegerField(default=0)
+    num_subs = models.IntegerField(default=0)
+    num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
 
 class OverallSocial(models.Model):
     date = models.DateTimeField()
     num_tweets = models.IntegerField(default=0)
-    num_searches = models.IntegerField(default=0)
+    num_subs = models.IntegerField(default=0)
+    num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
 
 class WatchItem(models.Model):
