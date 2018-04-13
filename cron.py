@@ -27,7 +27,12 @@ mode = []
 historyDays = 184 #default is 6 months = 184 days
 coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/"
 cryptoCompare = "https://min-api.cryptocompare.com/data/"
+cryptoCompareList = "https://www.cryptocompare.com/api/data/"
 icoWatchList = "https://api.icowatchlist.com/public/v1/" 
+newsapi = "https://newsapi.org/v2/everything?q="
+newsapi_keys = ["&apiKey=e9f31afd6dd54e14930244b5f52cdc45","&apiKey=7f9ed31f06e7459b8aa3121e437b30d3","&apiKey=4ff3432a39664cb0a21e24e63caef9bf","&apiKey=2df0257ef60d402c812c70d47c172612","&apiKey=8b211b2c69064b05a69b21989ee7e1ef","&apiKey=12ecd0af2710410dbb6a8b982cbe1f70","&apiKey=1f625b75875340b094da51d2b0c49d1a",
+"&apiKey=5e37b20fc557425aaa9ab746931d28a3"]
+newsapi_key = 0
 
 '''
 A universal function that retrieves the JSON data from each of the
@@ -38,6 +43,7 @@ APIs we are using and returns the raw JSON Object.
 '''
 def getAPI(api):
 	res = requests.get(api)
+	#res.raise_for_status()
 	data = res.json()
 	return data
 
@@ -219,6 +225,7 @@ def parseICO():
 
 	return ico_dict
 
+
 '''
 Parse the Twitter API for any new information on the coins being 
 searched and return the array of data.
@@ -226,45 +233,291 @@ searched and return the array of data.
 @params		String[] coinList
 @returns	int	
 '''
-#def parseTwitterLive(coinList):
-#	print("TODO")
+def parseGeneralTwitter(coinList):
+	id = 0
+	twitter = []
+	for i in range(0, len(coinList)):
+		coin = coinList[i]
+			
+		tweet = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		tweetRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		tweet["name"] = coin
+		tweet["statuses"] = 0
+		if("statuses" in tweetRaw["Data"]["Twitter"]):
+			tweet["statuses"] = tweetRaw["Data"]["Twitter"]["statuses"]
+		else:
+			tweet["statuses"] = -1
+		
+		twitter.append(tweet)
+
+	return twitter
 
 '''
-Parse the Twitter API for old information on the coins being 
+Parse the Reddit data and return it as an array.
+https://www.reddit.com/r/CryptoCurrency/
+
+@params		String[] coinList
+@returns	int[]
+'''
+def parseGeneralReddit(coinList):
+	id = 0
+	coin = ""
+	reddit = []
+	for i in range(0, len(coinList)):
+		if(coinList[i] == "MIOTA"):
+			coin = "IOT"
+		else:
+			coin = coinList[i]
+			
+		red = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		redRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		red["name"] = coin
+		red["subscribers"] = 0
+
+		if("subscribers" in redRaw["Data"]["Reddit"]):
+			red["subscribers"] = redRaw["Data"]["Reddit"]["subscribers"]
+		else:
+			red["subscribers"] = -1
+		
+		reddit.append(red)
+
+	return reddit
+	
+'''
+Parse the facebook like data and return it as an array.
+
+@params		String[] coinList
+@returns	int[]
+'''
+def parseGeneralFacebook(coinList):
+	id = 0
+	coin = ""
+	facebook = []
+	for i in range(0, len(coinList)):
+		if(coinList[i] == "MIOTA"):
+			coin = "IOT"
+		else:
+			coin = coinList[i]
+			
+		fb = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		fbRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		fb["name"] = coin
+		fb["likes"] = 0
+
+		if("likes" in fbRaw["Data"]["Facebook"]):
+			fb["likes"] = fbRaw["Data"]["Facebook"]["likes"]
+		else:
+			fb["likes"] = -1
+		
+		facebook.append(fb)
+
+	return facebook
+
+'''
+Parse the Twitter API for any new information on the coins being 
 searched and return the array of data.
 
 @params		String[] coinList
 @returns	int	
 '''
-#def parseTwitterHistory(coinList):
-#	print("TODO")
+def parseCoinTwitter(coinList):
+	id = 0
+	coin = ""
+	twitter = []
+	for i in range(0, len(coinList)):
+		if(coinList[i] == "MIOTA"):
+			coin = "IOT"
+		else:
+			coin = coinList[i]
+			
+		tweet = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		tweetRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		tweet["name"] = coin
+		tweet["statuses"] = 0
+		if("statuses" in tweetRaw["Data"]["Twitter"]):
+			tweet["statuses"] = tweetRaw["Data"]["Twitter"]["statuses"]
+		else:
+			tweet["statuses"] = -1
+		
+		twitter.append(tweet)
+
+	return twitter
 
 '''
-AParse the Google Trends data and return it as an array.
+Parse the Reddit data and return it as an array.
 
 @params		String[] coinList
-@returns	int
+@returns	int[]
 '''
-#def getGoogleTrends(coinList):
-#	print("TODO")
+def parseCoinReddit(coinList):
+	id = 0
+	coin = ""
+	reddit = []
+	for i in range(0, len(coinList)):
+		if(coinList[i] == "MIOTA"):
+			coin = "IOT"
+		else:
+			coin = coinList[i]
+			
+		red = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		redRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		red["name"] = coin
+		red["subscribers"] = 0
 
+		if("subscribers" in redRaw["Data"]["Reddit"]):
+			red["subscribers"] = redRaw["Data"]["Reddit"]["subscribers"]
+		else:
+			red["subscribers"] = -1
+		
+		reddit.append(red)
+
+	return reddit
+	
+'''
+Parse the facebook like data and return it as an array.
+
+@params		String[] coinList
+@returns	int[]
+'''
+def parseCoinFacebook(coinList):
+	id = 0
+	coin = ""
+	facebook = []
+	for i in range(0, len(coinList)):
+		if(coinList[i] == "MIOTA"):
+			coin = "IOT"
+		else:
+			coin = coinList[i]
+			
+		fb = {}
+		data = getAPI(cryptoCompareList+"coinlist/")
+		id = data["Data"][coin]["Id"]
+		fbRaw = getAPI(cryptoCompareList+"socialstats/?id="+id)
+		fb["name"] = coin
+		fb["likes"] = 0
+
+		if("likes" in fbRaw["Data"]["Facebook"]):
+			fb["likes"] = fbRaw["Data"]["Facebook"]["likes"]
+		else:
+			fb["likes"] = -1
+		
+		facebook.append(fb)
+
+	return facebook
+
+	
+	
+def newsAPIAdv(data):
+	global newsapi_key
+	info = getAPI(newsapi+data+newsapi_keys[newsapi_key])
+	ticker = 0
+	while(info["status"] == "error"):
+		newsapi_key = (newsapi_key+1)%len(newsapi_keys)
+		info = getAPI(newsapi+data+newsapi_keys[newsapi_key])
+		ticker += 1
+		if(ticker > len(newsapi_keys)):
+			print("ERROR: Ran out of newsapi keys, please add more or wait 6 hours to continue")
+			sys.exit(1)
+	return info
 '''
 Parse the general news of cryptocurrencies and return as array.
 
-@params		String[] coinList
 @returns	int	
 '''
-#def getGeneralNews(coinList):
-#	print("TODO")
+def parseGeneralNews():
+	#5 calls
+	terms = ["crypto","cryptocurrency","cryptocurrencies", "blockchain"]
+	
+	totalResults = 0;
+	tr = []
+	for t in terms:
+		if(t not in tr):
+			data = newsAPIAdv(t)			
+			totalResults += data["totalResults"]
+			tr.append(t)
+	if(len(tr) > 1):
+		data = newsAPIAdv(" ".join(tr))
+		totalResults -= data["totalResults"]
+
+	return totalResults
 
 '''
 Parse the specific news for the coin.
 
-@params		String coin
-@returns	int	
+@returns	int[]
 '''
-#def getCoinNews(coin):
-#	print("TODO")
+def parseCoinNews():
+	#3*N calls -> 30
+	conn = getConnected()
+	cur = conn.cursor()
+	cur.execute("SELECT * FROM cryptocounter_coin")
+	row = cur.fetchall()
+
+	news_dict = []
+	for i in range(0, len(row)):
+		news_inner = {}
+		news_inner["id"] = row[i][0]
+		news_inner["ticker"] = row[i][2]
+		terms = eval(row[i][4])
+		news_inner["terms"] = terms
+		totalResults = 0;
+		tr = []
+		for t in terms:
+			if(t not in tr):
+				data = newsAPIAdv(t)
+				totalResults += data["totalResults"]
+				tr.append(t)
+		if(len(tr) > 1):
+			data = newsAPIAdv(" ".join(tr))
+			totalResults -= data["totalResults"]
+		news_inner["results"] = totalResults;
+		news_dict.append(news_inner)
+
+	return news_dict
+	
+'''
+Parse the specific news for the ICO.
+
+@returns	int[]
+'''
+def parseICONews():
+	#580+ calls
+	conn = getConnected()
+	cur = conn.cursor()
+	cur.execute("SELECT * FROM cryptocounter_ico")
+	row = cur.fetchall()
+
+	ico_dict = []
+	for i in range(0, len(row)):
+		ico_inner = {}
+		ico_inner["id"] = row[i][0]
+		ico_inner["name"] = row[i][1]
+		terms = eval(row[i][5])
+		ico_inner["terms"] = terms
+		totalResults = 0;
+		tr = []
+		for t in terms:
+			if(t not in tr):
+				data = newsAPIAdv(t)
+				totalResults += data["totalResults"]
+				tr.append(t)
+		if(len(tr) > 1):
+			data = newsAPIAdv(" ".join(tr))
+			totalResults -= data["totalResults"]
+		ico_inner["results"] = totalResults;
+		ico_dict.append(ico_inner)
+
+	return ico_dict
 
 ### Commands to be called by CRON ###
 
@@ -375,14 +628,131 @@ def updateICO():#-> once every day
 		
 	conn.commit()
 	conn.close()
+	
+def updateOverallSocial():
+	#break
+	hour = 3600
+	day = 24 * hour
+	
+	conn = getConnected()
+	cur = conn.cursor()
 
-### CRON CALLS ###
-sched = BlockingScheduler(timezone="UTC")
-sched.add_job(setTrackedCoins, 'cron', hour=0, minute=0)
-sched.add_job(updateCurrentPrice, 'cron', hour=0, minute=5)
-sched.add_job(updateICO, 'cron', hour=0,minute=10)
-#sched.add_job(testcron, 'interval', minutes=1*2)
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_overallsocial GROUP BY date ORDER BY date ASC LIMIT 1")
 
+	DBsocial = cur.fetchall()
+	dl = 0
+	d = time.time()
+	now = int(d-(d%day))
+	if(len(DBsocial) > 0):
+		dt = int(time.mktime(DBsocial[0][1].timetuple()))
+		dl = int(dt-(dt%day))
+	
+	if(now != dl):
+		pNews = parseGeneralNews()
+		pTweet = parseGeneralTwitter()
+		pReddit = parseGeneralReddit()
+		pFB = parseGeneralFacebook()
+		
+		dt = str(datetime.datetime.fromtimestamp(now))
+		cur.execute("INSERT INTO cryptocounter_overallsocial (date, num_tweets, num_subs, num_likes, num_articles) VALUES('{}',{},{},{},{})".format(dt,pTweet,pReddit,pFB,pNews))
+		print("Current overall social added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
+	else:
+		print("ALERT: Skipping current overall social, duplicate")
+
+		
+	conn.commit()
+	conn.close()
+
+def updateSocialCoin():
+	hour = 3600
+	day = 24 * hour
+	
+	conn = getConnected()
+	cur = conn.cursor()
+
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialcoin GROUP BY date ORDER BY date ASC LIMIT 1")
+
+	DBsocial = cur.fetchall()
+	dl = 0
+	d = time.time()
+	now = int(d-(d%day))
+	if(len(DBsocial) > 0):
+		dt = int(time.mktime(DBsocial[0][1].timetuple()))
+		dl = int(dt-(dt%day))
+	
+	if(now != dl):
+		pNews = parseCoinNews()
+		pTweet = parseCoinTwitter(trackedCoins)
+		pReddit = parseCoinReddit(trackedCoins)
+		pFB = parseCoinFacebook(trackedCoins)
+		
+		dt = str(datetime.datetime.fromtimestamp(now))
+		for i in range(0,len(pNews)):
+			coinID = pNews[i]["id"] 
+			coinNews = pNews[i]["results"]
+			coinTweet = pTweet[i]["statuses"]
+			coinSub = pReddit[i]["subscribers"]
+			coinLikes = pFB[i]["likes"]
+			
+			cur.execute("INSERT INTO cryptocounter_socialcoin (date, num_tweets, num_subs, num_likes, num_articles, coin_id_id) VALUES('{}',{},{},{},{},{})".format(dt,coinTweet,coinSub,coinLikes,coinNews,coinID))
+		print("Current social coin added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
+	else:
+		print("ALERT: Skipping current social coin, duplicate")
+
+		
+	conn.commit()
+	conn.close()
+
+
+def updateSocialICO():
+	#break
+	hour = 3600
+	day = 24 * hour
+	
+	conn = getConnected()
+	cur = conn.cursor()
+	
+	cur.execute("SELECT * FROM cryptocounter_ico")
+	icoInfo = cur.fetchall()
+	
+	icoTmp = []
+	for z in range(0, len(icoInfo)):
+		icoTmp.append(icoInfo[z][1])
+	
+	print(icoTmp)
+
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialico GROUP BY date ORDER BY date ASC LIMIT 1")
+
+	DBsocial = cur.fetchall()
+	dl = 0
+	d = time.time()
+	now = int(d-(d%day))
+	if(len(DBsocial) > 0):
+		dt = int(time.mktime(DBsocial[0][1].timetuple()))
+		dl = int(dt-(dt%day))
+	
+	if(now != dl):
+		pNews = parseICONews()
+		pTweet = parseICOTwitter(icoTmp)
+		pReddit = parseICOReddit(icoTmp)
+		pFB = parseICOFacebook(icoTmp)
+
+		dt = str(datetime.datetime.fromtimestamp(now))
+		for i in range(0,len(pNews)):
+			icoID = pNews[i]["id"]
+			icoNews = pNews[i]["results"]
+			icoTweet = pTweet[i]["statuses"]
+			icoSub = pReddit[i]["subscribers"]
+			icoLikes = pFB[i]["likes"]
+
+			cur.execute("INSERT INTO cryptocounter_socialico (date, num_tweets, num_subs, num_likes, num_articles, ico_id_id) VALUES('{}',{},{},{},{},{})".format(dt,icoTweet,icoSub,icoLikes,icoNews,icoID))
+		print("Current social ICO added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
+	else:
+		print("ALERT: Skipping current social ICO, duplicate")
+
+		
+	conn.commit()
+	conn.close()
 
 
 ### TESTING CODE BELOW ###
@@ -400,10 +770,9 @@ def truncateDB(test=False):
 		cur.execute("TRUNCATE TABLE cryptocounter_"+item+" RESTART IDENTITY CASCADE")
 		if(not(test)):
 			print("Truncated "+item)
-	cur.execute("ALTER SEQUENCE cryptocounter_coin_coin_id_seq RESTART 1")
-	cur.execute("ALTER SEQUENCE cryptocounter_ico_ico_id_seq RESTART 1")
-	cur.execute("ALTER SEQUENCE cryptocounter_price_id_seq RESTART 1")
-
+	seqList = ["coin_coin", "ico_ico","price","overallsocial","socialcoin","socialico"]
+	for item in seqList:
+		cur.execute("ALTER SEQUENCE cryptocounter_"+item+"_id_seq RESTART 1")
 	conn.commit()
 	conn.close()
 
@@ -418,17 +787,40 @@ def main(test=False): #setup for initial run
 		updateCurrentPrice()
 		print("[Cron is updating ICO data]")
 		updateICO()
+		#print("[Cron is updating overall social data]")
+		#updateOverallSocial()
+		print("[Cron is updating social coin data]")
+		updateSocialCoin()
+		#print("[Cron is updating social ICO data]")
+		#updateSocialICO()
 		if("c" in mode):
 			print("[Cron is starting cronjobs]")
 			sched.start() #start cron
 	else:
 		setTrackedCoins()
-		updateHistoricalPrice(7)	#184,numbers of days
+		updateHistoricalPrice(historyDays)	#184,numbers of days
 		updateCurrentPrice()
 		updateICO()
+		#updateOverallSocial()
+		updateSocialCoin()
+		#updateSocialICO()
 
 
 
+### CRON CALLS ###
+sched = BlockingScheduler(timezone="UTC")
+sched.add_job(main, 'cron', [True], hour=0, minute=0)
+#sched.add_job(main, 'interval', [True], minutes=1)
+'''
+calling main(True) replaced below
+sched.add_job(setTrackedCoins, 'cron', hour=0, minute=0)
+sched.add_job(updateCurrentPrice, 'cron', hour=0, minute=0)
+sched.add_job(updateICO, 'cron', hour=0,minute=0)
+sched.add_job(updateOverallSocial, 'cron', hour=0,minute=0)
+sched.add_job(updateSocialCoin, 'cron', hour=0,minute=0)
+sched.add_job(updateSocialICO, 'cron', hour=0,minute=0)
+'''
+		
 ### MAIN TESTING CALLS ###
 # Import the python xUnit framwork
 import unittest
@@ -602,8 +994,8 @@ import getopt
 
 fullCmdArguments = sys.argv
 argumentList = fullCmdArguments[1:]
-unixOptions = "hce:rtp:"
-gnuOptions = ["help", "cron", "cronEnd=" "reset", "test", "history="]
+unixOptions = "hce:rtp:d"
+gnuOptions = ["help", "cron", "cronEnd=" "reset", "test", "history=", "debug"]
 
 try:  
     arguments, values = getopt.getopt(argumentList, unixOptions, gnuOptions)
@@ -623,6 +1015,7 @@ for currentArgument, currentValue in arguments:
 		print("--test                 -t             Start xUnit tests")
 		print("--history [days]       -p             Sets the number of days to go back in history")
 		print("                                 		Default: 184 days (6 months)")
+		print("--debug                -d             Debug mode of testing as we code")
 		print("-----------------------------------------------------------------------------")
 		sys.exit(0)
 	elif currentArgument in ("-c", "--cron"):
@@ -643,6 +1036,21 @@ for currentArgument, currentValue in arguments:
 			sys.exit(1)
 		print (("Changed the default history log to {} days").format(int(currentValue)))
 		historyDays = int(currentValue)
+	elif currentArgument in ("-d", "--debug"):
+		print("Currently in debug mode:")
+		### Add testing code below ###
+		setTrackedCoins()
+		updateICO()
+		#updateSocialICO()
+		terms = ["crypto","cryptocurrency","cryptocurrencies", "blockchain"]
+		pTweet = parseGeneralTwitter(terms)
+		#pReddit = parseGeneralReddit(terms)
+		#pFB = parseGeneralFacebook(terms)
+		#plist = parseFacebook(trackedCoins)
+		pprint.pprint(pTweet)
+		#addPriceInfo(plist)
+		### End of testing code ###
+		sys.exit(0)
 
 if __name__ == '__main__':
 	main() #setup init calls
