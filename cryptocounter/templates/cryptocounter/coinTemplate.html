@@ -228,8 +228,9 @@
   <div id="header"></div>
   <!--Remaining section-->
   <div class="container">
+    {% load humanize %}
     <div class="page-header">
-      <h2>{{coin.coin_name}} ({{coin.ticker}})  :  ${{coin.price}}</h2>
+      <h2>{{coin.coin_name}} ({{coin.ticker}})  :  ${{coin.price|intcomma}}</h2>
     </div>
     <div class="coinStatRow row col-sm-12">
 			<div class="col-sm-4 col-xs-12 coinStat">
@@ -237,7 +238,7 @@
 					Market Cap:
 				</div>
 				<div>
-					<coinStatValue>${{coin.market_cap}}</coinStatValue>
+					<coinStatValue>${{coin.market_cap|intcomma}}</coinStatValue>
 				</div>
 			</div>
 			<div class="col-sm-4 col-xs-12 coinStat">
@@ -253,7 +254,7 @@
 					Circulating Supply:
 				</div>
 				<div>
-					<coinStatValue>{{coin.circ_supply}}</coinStatValue>
+					<coinStatValue>{{coin.circ_supply|intcomma}}</coinStatValue>
 				</div>
 			</div>
 		</div>
@@ -263,49 +264,49 @@
 
   <div class="container">
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'Twitter')" id="defaultOpen">Twitter</button>
-      <button class="tablinks" onclick="openTab(event, 'Reddit')">Reddit</button>
-      <button class="tablinks" onclick="openTab(event, 'News')">News</button>
-    </div>
+  <button class="tablinks" onclick="openTab2(event, 'Twitter')" id="defaultOpen">Twitter</button>
+  <button class="tablinks" onclick="openTab2(event, 'Reddit')">Reddit</button>
+  <button class="tablinks" onclick="openTab2(event, 'News')">News</button>
+</div>
 
-    <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
-      <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/hashtag/cryptocurrency" data-widget-id="976621636551135234">#cryptocurrency Tweets</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
+            <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/hashtag/cryptocurrency" data-widget-id="976621636551135234">#cryptocurrency Tweets</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
-    </div>
+</div>
 
-    <div id="Reddit" class="tabcontent">
-      <script src="https://www.reddit.com/r/CryptoCurrency/.embed?limit=5&sort=hot" type="text/javascript"></script>
-    </div>
+<div id="Reddit" class="tabcontent list">
+<script src="https://www.reddit.com/r/CryptoCurrency/.embed?limit=5&sort=hot" type="text/javascript"></script>
+</div>
 
-    <div id="News" class="tabcontent">
-      <blockquote class="embedly-card"><h4><a href="https://www.coindesk.com/category/technology/altcoins/">Altcoin News - Daily Cryptocurrency Articles - CoinDesk</a></h4><p>Alternative cryptocurrencies have emerged in bitcoin's shadow. Read the latest altcoin news every day on CoinDesk.</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+<div id="News" class="tabcontent list">
+	<blockquote class="embedly-card"><h4><a href="https://www.coindesk.com/category/technology/altcoins/">Altcoin News - Daily Cryptocurrency Articles - CoinDesk</a></h4><p>Alternative cryptocurrencies have emerged in bitcoin's shadow. Read the latest altcoin news every day on CoinDesk.</p></blockquote>
+	<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 
-      <blockquote class="embedly-card"><h4><a href="https://www.nytimes.com/topic/subject/bitcoin">Bitcoin</a></h4><p>News about Bitcoin. Commentary and archival information about Bitcoin from The New York Times.</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+ 	<blockquote class="embedly-card"><h4><a href="https://www.nytimes.com/topic/subject/bitcoin">Bitcoin</a></h4><p>News about Bitcoin. Commentary and archival information about Bitcoin from The New York Times.</p></blockquote>
+	<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 
-      <blockquote class="embedly-card"><h4><a href="https://www.entrepreneur.com/topic/cryptocurrency">Cryptocurrency</a></h4><p>The latest news, videos, and discussion topics on Cryptocurrency</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-    </div>
+	<blockquote class="embedly-card"><h4><a href="https://www.entrepreneur.com/topic/cryptocurrency">Cryptocurrency</a></h4><p>The latest news, videos, and discussion topics on Cryptocurrency</p></blockquote>
+	<script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+</div>
+<script>
 
-    <script>
-
-    function openTab(evt, tabName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
+function openTab2(evt, tabName) {
+    var i, tabcontent2, tablinks2;
+    tabcontent2 = document.getElementsByClassName("list");
+    for (i = 0; i < tabcontent2.length; i++) {
+        tabcontent2[i].style.display = "none";
     }
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    tablinks2 = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks2.length; i++) {
+        tablinks2[i].className = tablinks2[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
     </script>
   </div>
 

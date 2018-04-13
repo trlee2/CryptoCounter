@@ -37,7 +37,7 @@ def watchlist(request):
 
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)
-    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData})
+    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory']})
 
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)

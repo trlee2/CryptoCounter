@@ -249,11 +249,12 @@
       <tr>
         <td class="marketTable"><a href="index.html"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
         <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
+        {% load humanize %}
         <td>{{i.ticker}}</td>
-        <td>${{i.price}}</td>
-        <td>{{i.circ_supply}}</td>
+        <td>${{i.price|intcomma}}</td>
+        <td>{{i.circ_supply|intcomma}}</td>
         <td>{% widthratio i.percent_change 1 100 %}%</td>
-        <td>${{i.market_cap}}</td>
+        <td>${{i.market_cap|intcomma}}</td>
       </tr>
       {% endfor %}
 

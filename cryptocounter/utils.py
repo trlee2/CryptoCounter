@@ -54,12 +54,12 @@ def getCoinDetails(cname):
         print('Coin does not exist in database')
 
     # get the coin's current price
-    #time = datetime.now() - timedelta(hours=24)
+    time = datetime.now() - timedelta(days=30)
 
     # try to get the pricing data for coin if there's any
     try:
-        coinPrice = Price.objects.filter(coin_id=coin.coin_id).order_by('-date')
-        coinPrice = coinPrice[0]
+        coinHistory = Price.objects.filter(coin_id=coin.coin_id, date__gte=time).order_by('-date')
+        coinPrice = coinHistory[0]
     except:
         print('No pricing data for coin found')
         return []
@@ -70,7 +70,7 @@ def getCoinDetails(cname):
     coinData = {'coin_name':coin.coin_name, 'ticker':coin.ticker, 'price':coinPrice.price,
     'circ_supply':coinPrice.circ_supply, 'percent_change':coinPrice.percent_change, 'market_cap':coinPrice.market_cap}
 
-    return coinData
+    return {'coinData':coinData, 'coinHistory':coinHistory}
 
 # return all data on an individual ICO
 def getIcoDetails(iname):
