@@ -31,7 +31,6 @@ var chart1;
   window.onload = function () {
 
     var chart = new CanvasJS.Chart("chartContainer", {
-	  height: 370, width: 800,
       title: {
         text: "Social Trends"
       },
@@ -217,10 +216,8 @@ var chart1;
       }
       chart.render();
     }
-
-
+	 document.getElementById("workaround").click();
     var chart1 = new CanvasJS.Chart("chartContainer2", {
-	  height: 370, width: 800,
       title: {
         text: "Social Trends"
       },
@@ -353,6 +350,8 @@ var chart1;
       }
       chart1.render();
     }
+
+	document.getElementById("defaultOpen").click();
   }
   </script>
   <!-- Latest compiled and minified JavaScript -->
@@ -368,13 +367,13 @@ var chart1;
     </div>
     <div class="tab">
       <button class="tablinks" onclick="openTab(event, 'AllTime')" id="defaultOpen">All Time</button>
-      <button class="tablinks" onclick="openTab(event, '1Year')">Yearly</button>
+      <button class="tablinks" onclick="openTab(event, '1Year')" id="workaround">Yearly</button>
     </div>
     <div id="AllTime" class="tabcontent">
-      <div class="trendGraph" id="chartContainer" style="height: 370px; width: 800px;"></div>
+      <div class="trendGraph" id="chartContainer"></div>
     </div>
     <div id="1Year" class="tabcontent">
-      <div class="trendGraph" id="chartContainer2" style="height: 370px; width: 800px;"></div>
+      <div class="trendGraph" id="chartContainer2"></div>
     </div>
 
 
