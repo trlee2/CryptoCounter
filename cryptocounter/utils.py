@@ -1,5 +1,5 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico
+from .models import Coin, Price, Ico, WatchItem
 
 from datetime import datetime, timedelta, timezone
 
@@ -97,3 +97,25 @@ def getIcoDetails(iname):
     icoData = temp
 
     return icoData
+
+# add a coin to user's watchlist when on Market page
+def addWatchedCoin(username, coin):
+    #TODO
+    return
+
+# returns coins a user watches
+def getWatchedCoins(username):
+    print(username)
+    coinList = []
+    # get watched coins
+    try:
+        # get user's watched coins
+        watchCoins = WatchItem.objects.filter(username=username).values('coin_id')
+        # get pricing for each coin
+        for c in watchCoins:
+            p = Price.objects.filter(coin_id = c.coin_id).order_by('-date')
+            coinList.append(p[0])
+    except:
+        print('No watched coins watched by user')
+
+    return coinList

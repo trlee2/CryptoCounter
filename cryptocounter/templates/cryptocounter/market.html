@@ -228,11 +228,12 @@
   <div id="header"></div>
   <!--Remaining section-->
   <div class="container">
-    <div class="page-header">
+    <div class="page-header top-title">
       <h3>Market</h3>
     </div>
   </div>
   <div class="trendGraph" id="chartContainer"></div>
+  <hr>
   <div>
     <table>
       <tr>
@@ -253,7 +254,7 @@
         <td>{{i.ticker}}</td>
         <td>${{i.price|intcomma}}</td>
         <td>{{i.circ_supply|intcomma}}</td>
-        <td>{% widthratio i.percent_change 1 100 %}%</td>
+        <td>{{i.percent_change}}%</td>
         <td>${{i.market_cap|intcomma}}</td>
       </tr>
       {% endfor %}

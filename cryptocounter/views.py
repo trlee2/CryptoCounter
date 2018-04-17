@@ -8,7 +8,7 @@ from .forms import UserRegistrationForm, UserLoginForm
 
 from .models import WatchItem
 
-from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails
+from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails, getWatchedCoins
 
 # Create your views here.
 def market(request):
@@ -27,11 +27,9 @@ def watchlist(request):
     if request.user.is_authenticated:
         # get username
         username = request.user.username
-        # get user's watched coins
-        #watchCoins = WatchItem.objects.filter(username=username).values('coin_id')
-        # get coin pricing date
-        #watchPrices = Price.objects.filter()
-        return render(request, 'cryptocounter/watchlist.html')
+        # get watched coins
+        watchCoins = getWatchedCoins(username)
+        return render(request, 'cryptocounter/watchlist.html', {'watchCoins':watchCoins})
     else:
         return HttpResponseRedirect('/login')
 

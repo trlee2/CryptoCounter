@@ -2,18 +2,17 @@
 	width:100%;
 	padding-top:5px;
 	padding-bottom:5px;
-	text-align:left;
+	text-align:center;
 	font-size:14px;
 	color:#fff;
 	border-radius:0px;
 }
 .encap {
-	display: block;
-	margin: 0 auto;
+	text-align: center;
 }
-
 .navbar{
 	border-radius:0px;
+	margin-bottom: 0px;
 }
 .navbar-header{
 	border-radius:0px;
@@ -31,9 +30,12 @@
 .product-title img{
 	margin-bottom:20px;
 	margin-top: 20px;
-	height: 100px;
-	width: 600px;
+	width: 60%;
 	float:left;
+}
+.top-title {
+	margin-top:0px;
+
 }
 .product-title a{
 	color: black;
@@ -95,7 +97,7 @@ table {
 }
 
 td, th {
-    border: 1px solid #000000;
+    border: 0px solid #000000;
     text-align: left;
     padding: 8px;
 }
@@ -186,7 +188,8 @@ code {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
-	text-align: center;
+		text-align: center;
+		width: 100%
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -198,7 +201,7 @@ code {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-	text-align: center;
+		text-align: center;
 }
 
 /* Change background color of buttons on hover */
