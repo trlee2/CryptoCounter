@@ -22,7 +22,7 @@ def getCurrPrices():
                 pData = Price.objects.filter(coin_id=coin.coin_id).order_by('-date')
                 pData = pData[0]
                 # create table row
-                temp = {'coin_name':coin.coin_name, 'ticker':coin.ticker, 'price':pData.price,
+                temp = {'coin_id':coin.coin_id, 'coin_name':coin.coin_name, 'ticker':coin.ticker, 'price':pData.price,
                 'circ_supply':pData.circ_supply, 'percent_change':pData.percent_change, 'market_cap':pData.market_cap}
                 data.append(temp)
             except:
@@ -39,7 +39,7 @@ def getIcoInfo():
         # determine if ICO is live
         try:
             daysRemaining = ico.enddate.date() - currTime.date()
-            temp = {'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
+            temp = {'ico_id':ico.ico_id, 'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
             'ico_name':ico.ico_name, 'description':ico.description}
             data.append(temp)
         except:
@@ -127,28 +127,69 @@ def getWatchedCoins(uname):
 # returns ICOs a user watches
 def getWatchedIcos(uname):
     icoList = []
+    # get the user
+    user = User.objects.get(username = uname)
     # get watched coins
     try:
         # get user's watched coins
-        watchIcos = WatchItem.objects.filter(username__username=uname)
+        watchIcos = WatchIco.objects.filter(username=user)
         # get pricing for each coin
         for i in watchIcos:
             # get ICO info
             try:
-                ico = Ico.objects.get(ico_name=i.ico_id.ico_id)
-            except:
-                print('ICO does not exist in database')
+                ico = Ico.objects.get(ico_id=i.ico_id.ico_id)
 
-            currTime = datetime.now(timezone.utc)
-            # determine if ICO is live
-            try:
+                currTime = datetime.now(timezone.utc)
+                # determine if ICO is live
                 daysRemaining = ico.enddate.date() - currTime.date()
-                temp = {'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
+                temp = {'ico_id':ico.ico_id, 'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
                 'ico_name':ico.ico_name, 'description':ico.description}
                 icoList.append(temp)
             except:
-                print('No ICO data found')
+                print('ICO does not exist in database')
+
     except:
         print('No watched ICOs by user')
 
     return icoList
+
+# add a coin to a user's Watchlist
+def addWatchedCoin(uname, cid):
+    # check if coin already being tracked by user
+    if WatchItem.objects.filter(username__username=uname, coin_id=cid).exists():
+        print("Coin is already being tracked by user")
+        return
+    # get user instance
+    user = User.objects.get(username = uname)
+    coin = Coin.objects.get(coin_id = cid)
+    # add coin to user's tracked coins
+    item = WatchItem(username = user, coin_id = coin)
+    item.date_added=datetime.now(timezone.utc)
+    item.save()
+    if item is None:
+        print("Failed adding coin")
+        return
+    else:
+        print("Coin now being tracked")
+    return
+
+# add an ICO to a user's Watchlist
+def addWatchedIco(uname, iid):
+    # check if ICO already being tracked by user
+    if WatchIco.objects.filter(username__username=uname, ico_id=iid).exists():
+        print("ICO is already being tracked by user")
+        return
+    # get user instance
+    user = User.objects.get(username = uname)
+    # get ico instance
+    ico = Ico.objects.get(ico_id = iid)
+    # add ICO to user's tracked ICOs
+    item = WatchIco(username = user, ico_id = ico)
+    item.date_added=datetime.now(timezone.utc)
+    item.save()
+    if item is None:
+        print("Failed adding ICO")
+        return
+    else:
+        print("ICO now being tracked")
+    return

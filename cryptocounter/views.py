@@ -8,7 +8,7 @@ from .forms import UserRegistrationForm, UserLoginForm
 
 from .models import WatchItem
 
-from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails, getWatchedCoins
+from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails, getWatchedCoins, getWatchedIcos, addWatchedCoin, addWatchedIco
 
 # Create your views here.
 def market(request):
@@ -29,9 +29,38 @@ def watchlist(request):
         username = request.user.username
         # get watched coins
         watchCoins = getWatchedCoins(username)
-        return render(request, 'cryptocounter/watchlist.html', {'watchCoins':watchCoins})
+        watchIcos = getWatchedIcos(username)
+        return render(request, 'cryptocounter/watchlist.html', {'watchCoins':watchCoins,'watchIcos':watchIcos})
     else:
         return HttpResponseRedirect('/login')
+
+def addWatchlistCoin(request, cid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            addWatchedCoin(request.user.username, cid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/market')
+
+def addWatchlistIco(request, iid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            addWatchedIco(request.user.username, iid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/ico')
 
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)

@@ -55,8 +55,12 @@
 
     {% for i in icos %}
     <tr>
-	  <td class="marketTable"><a href="index.html"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
-      <td>{{i.daysRemaining.days}}</td>
+	    <td class="marketTable"><a href="watchlist/addico/{{i.ico_id}}"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
+      {% if i.daysRemaining.days >= 0 %}
+      <td style="color:green;">{{i.daysRemaining.days}}</td>
+      {% else %}
+      <td style="color:red;">{{i.daysRemaining.days}}</td>
+      {% endif %}
       <td>{{i.startdate.date}}</td>
       <td>{{i.enddate.date}}</td>
       <td><a href="icodetails/{{i.ico_name}}">{{i.ico_name}}</a></td>

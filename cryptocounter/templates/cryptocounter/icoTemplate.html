@@ -240,7 +240,11 @@
 					Days Remaining:
 				</div>
 				<div>
-					<coinStatValue>{{ico.daysRemaining.days}}</coinStatValue>
+          {% if ico.daysRemaining.days >= 0 %}
+					<coinStatValue style="color:green;">{{ico.daysRemaining.days}}</coinStatValue>
+          {% else %}
+          <coinStatValue style="color:red;">{{ico.daysRemaining.days}}</coinStatValue>
+          {% endif %}
 				</div>
 			</div>
 			<div class="col-sm-4 col-xs-12 coinStat">

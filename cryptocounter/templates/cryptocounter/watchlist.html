@@ -75,34 +75,20 @@
 			<th>Name</th>
 			<th>Description</th>
 		</tr>
-		<tr>
-			<td>3</td>
-			<td>MM/DD/YY</td>
-			<td>MM/DD/YY</td>
-			<td><a href="account.html">Template Coin1</a></td>
-			<td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>MM/DD/YY</td>
-			<td>MM/DD/YY</td>
-			<td><a href="coinTemplate.html">Template Coin2</a></td>
-			<td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>MM/DD/YY</td>
-			<td>MM/DD/YY</td>
-			<td><a href="coinTemplate.html">Template Coin3</a></td>
-			<td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>MM/DD/YY</td>
-			<td>MM/DD/YY</td>
-			<td><a href="coinTemplate.html">Template Coin4</a></td>
-			<td>Bacon ipsum dolor amet biltong pancetta shoulder fatback spare ribs. </td>
-		</tr>
+
+    {% for i in watchIcos %}
+    <tr>
+      {% if i.daysRemaining.days >= 0 %}
+      <td style="color:green;">{{i.daysRemaining.days}}</td>
+      {% else %}
+      <td style="color:red;">{{i.daysRemaining.days}}</td>
+      {% endif %}
+      <td>{{i.startdate.date}}</td>
+      <td>{{i.enddate.date}}</td>
+      <td><a href="icodetails/{{i.ico_name}}">{{i.ico_name}}</a></td>
+      <td>{{i.description}}</td>
+    </tr>
+    {% endfor %}
 	</table>
 
 
