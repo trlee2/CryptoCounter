@@ -30,7 +30,7 @@
 
     var chart = new CanvasJS.Chart("chartContainer", {
       title: {
-        text: "{{coin.coin_name}} ({{coin.ticker}}) Social Trends"
+        text: "{{coin.coin_name}} Social Trends"
       },
       axisX: {
         valueFormatString: "MMM YYYY"
@@ -224,7 +224,7 @@
         valueFormatString: "MMM YYYY"
       },
       axisY2: {
-        title: "Thousands of Posts",
+        title: "Price (USD)",
       },
       toolTip: {
         shared: true
@@ -242,7 +242,7 @@
         name: "Price",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "$#,###",
         dataPoints: [
           { x: new Date(2014, 00, 01), y: 850 },
           { x: new Date(2014, 01, 01), y: 889 },
@@ -334,7 +334,6 @@
 	</div>
   <hr>
   <div class="trendGraph" id="chartContainer"></div>
-  <hr>
   <div class="trendGraph" id="chartContainer2"></div>
 
   <div class="container">

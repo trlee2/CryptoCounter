@@ -52,3 +52,14 @@ class WatchItem(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     coin_id = models.ForeignKey(Coin, on_delete=models.CASCADE)
     date_added = models.DateTimeField()
+
+class WatchIco(models.Model):
+    username = models.ForeignKey(User, on_delete=models.CASCADE)
+    ico_id = models.ForeignKey(Ico, on_delete=models.CASCADE)
+    date_added = models.DateTimeField()
+
+class GeneralMarket(models.Model):
+    market_cap = models.BigIntegerField(default=0)
+    volume = models.BigIntegerField(default=0)
+    btc_dominance = models.IntegerField(default=0)
+    date_added = models.DateTimeField()

@@ -1,5 +1,6 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico, WatchItem
+from .models import Coin, Price, Ico, WatchItem, WatchIco
+from django.contrib.auth.models import User
 
 from datetime import datetime, timedelta, timezone
 
@@ -104,18 +105,50 @@ def addWatchedCoin(username, coin):
     return
 
 # returns coins a user watches
-def getWatchedCoins(username):
-    print(username)
+def getWatchedCoins(uname):
     coinList = []
     # get watched coins
     try:
         # get user's watched coins
-        watchCoins = WatchItem.objects.filter(username=username).values('coin_id')
+        watchCoins = WatchItem.objects.filter(username__username=uname)
         # get pricing for each coin
         for c in watchCoins:
             p = Price.objects.filter(coin_id = c.coin_id).order_by('-date')
-            coinList.append(p[0])
+            names = Coin.objects.get(coin_id = c.coin_id.coin_id)
+            pData = p[0]
+            temp = {'coin_name':names.coin_name, 'ticker':names.ticker, 'price':pData.price,
+            'circ_supply':pData.circ_supply, 'percent_change':pData.percent_change, 'market_cap':pData.market_cap}
+            coinList.append(temp)
     except:
         print('No watched coins watched by user')
 
     return coinList
+
+# returns ICOs a user watches
+def getWatchedIcos(uname):
+    icoList = []
+    # get watched coins
+    try:
+        # get user's watched coins
+        watchIcos = WatchItem.objects.filter(username__username=uname)
+        # get pricing for each coin
+        for i in watchIcos:
+            # get ICO info
+            try:
+                ico = Ico.objects.get(ico_name=i.ico_id.ico_id)
+            except:
+                print('ICO does not exist in database')
+
+            currTime = datetime.now(timezone.utc)
+            # determine if ICO is live
+            try:
+                daysRemaining = ico.enddate.date() - currTime.date()
+                temp = {'daysRemaining':daysRemaining, 'startdate':ico.startdate, 'enddate':ico.enddate,
+                'ico_name':ico.ico_name, 'description':ico.description}
+                icoList.append(temp)
+            except:
+                print('No ICO data found')
+    except:
+        print('No watched ICOs by user')
+
+    return icoList
