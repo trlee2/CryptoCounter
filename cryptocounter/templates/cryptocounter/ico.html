@@ -42,6 +42,7 @@
 
   <table class="icoTable">
     <tr>
+	  <th></th>
       <th>Days Remaining</th>
       <th>Start Date</th>
       <th>End Date</th>
@@ -51,6 +52,7 @@
 
     {% for i in icos %}
     <tr>
+	  <td class="marketTable"><a href="index.html"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
       <td>{{i.daysRemaining.days}}</td>
       <td>{{i.startdate.date}}</td>
       <td>{{i.enddate.date}}</td>
