@@ -49,39 +49,18 @@
 			<th>Market Cap</th>
 		 </tr>
 
-		 <tr>
-			<td><a href="coinTemplate.html">MyCoin1</a></td>
-			<td>C1</td>
-			<td>$$$$$</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		 </tr>
-		 <tr>
-			<td><a href="coinTemplate.html">MyCoin2</a></td>
-			<td>C2</td>
-			<td>$$$$$</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		 </tr>
-		 <tr>
-			<td><a href="coinTemplate.html">MyCoin3</a></td>
-			<td>C3</td>
-			<td>$$$$$</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		 </tr>
-		 <tr>
-			<td><a href="coinTemplate.html">MyCoin4</a></td>
-			<td>C4</td>
-			<td>$$$$$</td>
-			<td></td>
-			<td></td>
-			<td></td>
-		 </tr>
+     {% for i in watchCoins %}
+     <tr>
+       <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
+       {% load humanize %}
+       <td>{{i.ticker}}</td>
+       <td>${{i.price|intcomma}}</td>
+       <td>{{i.circ_supply|intcomma}}</td>
+       <td>{{i.percent_change}}%</td>
+       <td>${{i.market_cap|intcomma}}</td>
+     </tr>
+     {% endfor %}
+
 	</table>
 	<hr>
 	<h4 class="tableHead" >My Tracked ICOs:</h4>
