@@ -193,3 +193,22 @@ def addWatchedIco(uname, iid):
     else:
         print("ICO now being tracked")
     return
+
+# coin/ico name and ticker for search bar
+def getSearchTerms():
+    terms = []
+
+    # get all coins
+    coins = Coin.objects.all()
+    # iterate over each coin
+    for c in coins:
+        terms.append(str(c.coin_name))
+        terms.append(str(c.ticker))
+
+    # get all icos
+    icos = Ico.objects.all()
+    # iterate over each ico
+    for i in icos:
+        terms.append(str(i.ico_name))
+
+    return terms

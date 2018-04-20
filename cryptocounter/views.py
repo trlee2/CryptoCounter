@@ -8,7 +8,7 @@ from .forms import UserRegistrationForm, UserLoginForm
 
 from .models import WatchItem
 
-from .utils import getCurrPrices, getIcoInfo, getCoinDetails, getIcoDetails, getWatchedCoins, getWatchedIcos, addWatchedCoin, addWatchedIco
+from .utils import *
 
 # Create your views here.
 def market(request):
@@ -135,7 +135,8 @@ def account(request):
 
 def header(request):
     loggedin = request.user.is_authenticated
-    return render(request, 'cryptocounter/header.html', {'loggedin' : loggedin})
+    terms = getSearchTerms()
+    return render(request, 'cryptocounter/header.html', {'loggedin':loggedin, 'searchTerms':terms})
 
 def footer(request):
     return render(request, 'cryptocounter/footer.html')
