@@ -270,9 +270,9 @@
 
   <div class="container">
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'Twitter')" id="defaultOpen">Twitter</button>
-      <button class="tablinks" onclick="openTab(event, 'Reddit')">Reddit</button>
-      <button class="tablinks" onclick="openTab(event, 'News')">News</button>
+      <button class="tablinks" onclick="openTab2(event, 'Twitter')" id="defaultOpen">Twitter</button>
+      <button class="tablinks" onclick="openTab2(event, 'Reddit')">Reddit</button>
+      <button class="tablinks" onclick="openTab2(event, 'News')">News</button>
     </div>
 
     <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
@@ -281,11 +281,11 @@
 
     </div>
 
-    <div id="Reddit" class="tabcontent">
+    <div id="Reddit" class="tabcontent list">
       <script src="https://www.reddit.com/r/CryptoCurrency/.embed?limit=5&sort=hot" type="text/javascript"></script>
     </div>
 
-    <div id="News" class="tabcontent">
+    <div id="News" class="tabcontent list">
       <blockquote class="embedly-card"><h4><a href="https://www.coindesk.com/category/technology/altcoins/">Altcoin News - Daily Cryptocurrency Articles - CoinDesk</a></h4><p>Alternative cryptocurrencies have emerged in bitcoin's shadow. Read the latest altcoin news every day on CoinDesk.</p></blockquote>
       <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
 
@@ -296,23 +296,24 @@
       <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
     </div>
 
-    <script>
+<script>
 
-    function openTab(evt, tabName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
+function openTab2(evt, tabName) {
+    var i, tabcontent2, tablinks2;
+    tabcontent2 = document.getElementsByClassName("list");
+    for (i = 0; i < tabcontent2.length; i++) {
+        tabcontent2[i].style.display = "none";
     }
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    tablinks2 = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks2.length; i++) {
+        tablinks2[i].className = tablinks2[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
     </script>
   </div>
 
