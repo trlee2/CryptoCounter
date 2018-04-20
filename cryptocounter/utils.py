@@ -48,6 +48,7 @@ def getIcoInfo():
 
 # return all data on an individual coin
 def getCoinDetails(cname):
+    coinHistory = []
     # get coin info
     try:
         coin = Coin.objects.get(coin_name=cname)
@@ -55,15 +56,27 @@ def getCoinDetails(cname):
         print('Coin does not exist in database')
 
     # get the coin's current price
-    time = datetime.now() - timedelta(days=30)
+    time = datetime.now() - timedelta(days=31)
 
     # try to get the pricing data for coin if there's any
     try:
-        coinHistory = Price.objects.filter(coin_id=coin.coin_id, date__gte=time).order_by('-date')
-        coinPrice = coinHistory[0]
+        prices = Price.objects.filter(coin_id=coin.coin_id, date__gte=time).order_by('-date')
+        coinPrice = prices[0]
+
+        # create data points
+        for c in prices:
+            temp = {}
+            pyDate = c.date
+            year = pyDate.year
+            day = pyDate.day
+            month = pyDate.month - 1
+            temp['year'] = year
+            temp['month'] = month
+            temp['day'] = day
+            temp['price'] = c.price
+            coinHistory.append(temp)
     except:
         print('No pricing data for coin found')
-        return []
 
     # TODO: get coin's social trends
 
