@@ -44,6 +44,7 @@
   <h4 class="tableHead" >My Tracked Coins:</h4>
 	<table>
 		 <tr>
+			<th></th>
 			<th>Coin</th>
 			<th>Ticker</th>
 			<th>Price</th>
@@ -51,9 +52,10 @@
 			<th>Percent Change</th>
 			<th>Market Cap</th>
 		 </tr>
-
+	
      {% for i in watchCoins %}
      <tr>
+       <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
        <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
        {% load humanize %}
        <td>{{i.ticker}}</td>
@@ -69,6 +71,7 @@
 	<h4 class="tableHead" >My Tracked ICOs:</h4>
 	<table class="icoTable">
 		<tr>
+			<th></th>
 			<th>Days Remaining</th>
 			<th>Start</th>
 			<th>End</th>
@@ -78,6 +81,7 @@
 
     {% for i in watchIcos %}
     <tr>
+      <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
       {% if i.daysRemaining.days >= 0 %}
       <td style="color:green;">{{i.daysRemaining.days}}</td>
       {% else %}
