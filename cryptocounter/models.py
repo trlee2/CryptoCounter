@@ -32,6 +32,7 @@ class SocialCoin(models.Model):
     num_subs = models.IntegerField(default=0)
     num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
+    num_trends  =   models.IntegerField(default=0)
 
 class SocialIco(models.Model):
     ico_id = models.ForeignKey(Ico, on_delete=models.CASCADE)
@@ -40,6 +41,7 @@ class SocialIco(models.Model):
     num_subs = models.IntegerField(default=0)
     num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
+    num_trends  =   models.IntegerField(default=0)
 
 class OverallSocial(models.Model):
     date = models.DateTimeField()
@@ -47,6 +49,7 @@ class OverallSocial(models.Model):
     num_subs = models.IntegerField(default=0)
     num_likes = models.IntegerField(default=0)
     num_articles = models.IntegerField(default=0)
+    num_trends  =   models.IntegerField(default=0)
 
 class WatchItem(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
