@@ -17,8 +17,8 @@
     });
   } );
   </script>
-
-<div class="product-title container"><a href="/market"><img src="../../static/CryptoLogo.png"></a>
+{% load staticfiles %}
+<div class="product-title container"><a href="/market"><img src="{% static 'CryptoLogo.png'%}"></a>
   <div class="pull-right account">
     {% if not loggedin %}
     <a href="/login">login</a> | <a href="/register">create account</a>
