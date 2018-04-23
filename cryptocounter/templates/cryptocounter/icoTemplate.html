@@ -286,15 +286,37 @@
     </div>
 
     <div id="News" class="tabcontent list">
-      <blockquote class="embedly-card"><h4><a href="https://www.coindesk.com/category/technology/altcoins/">Altcoin News - Daily Cryptocurrency Articles - CoinDesk</a></h4><p>Alternative cryptocurrencies have emerged in bitcoin's shadow. Read the latest altcoin news every day on CoinDesk.</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+      <div id="content"></div>
+		<script>
+		var url = 'https://newsapi.org/v2/everything?' +
+			  'q={{ico.ico_name}}&' +
+			  'sortBy=new&' +
+			  'apiKey=657d2f7da373497480f8e8081f7efad2';
 
-      <blockquote class="embedly-card"><h4><a href="https://www.nytimes.com/topic/subject/bitcoin">Bitcoin</a></h4><p>News about Bitcoin. Commentary and archival information about Bitcoin from The New York Times.</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+		var req = new Request(url);
+		fetch(req)
+			.then(function(response) {
+			   return response.json(); 
+			})
+			.then(function(myJson) {
+				var article;
+				var temp = document.getElementById("content");
+				var jsondata = JSON.parse(JSON.stringify(myJson));
+				for (var i = 0; i < jsondata.articles.length; i++) {
+					//document.getElementById("content").innerHTML = i;
+					article = jsondata.articles[i];
+					//console.log(article.title);
+					//document.getElementById("content").innerHTML = article.title;
+					if(article.source.name != "Bleepingcomputer.com"){
+					temp.insertAdjacentHTML("beforeend", '<div>'+article.title+'</div>'
+														+'<div>'+article.description+'</div>'
+														+'<div><a href='+article.url+'>'+article.url+'</a></div>');
+					}
+				}
+			});
+		</script>
 
-      <blockquote class="embedly-card"><h4><a href="https://www.entrepreneur.com/topic/cryptocurrency">Cryptocurrency</a></h4><p>The latest news, videos, and discussion topics on Cryptocurrency</p></blockquote>
-      <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-    </div>
+		</div>
 
 <script>
 
