@@ -136,7 +136,8 @@ def account(request):
 def header(request):
     loggedin = request.user.is_authenticated
     terms = getSearchTerms()
-    return render(request, 'cryptocounter/header.html', {'loggedin':loggedin, 'searchTerms':terms})
+    stats = getBannerData()
+    return render(request, 'cryptocounter/header.html', {'loggedin':loggedin, 'searchTerms':terms, 'banner':stats})
 
 def footer(request):
     return render(request, 'cryptocounter/footer.html')

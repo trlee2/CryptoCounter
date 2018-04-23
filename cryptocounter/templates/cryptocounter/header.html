@@ -1,8 +1,9 @@
 <div class="promo navbar-inverse col-xs-12">
 	<div class=col-xs-12 encap">
-		<div class="col-sm-4">Market Cap:<value>$265,494,741,156</value></div>
-		<div class="col-sm-4">24h Vol:<value>$11,104,234,012</value></div>
-		<div class="col-sm-4">BTC Dominance:<value>43.8%</value></div>
+		{% load humanize %}
+		<div class="col-sm-4">Market Cap:<value>${{banner.market_cap|intcomma}}</value></div>
+		<div class="col-sm-4">24h Vol:<value>${{banner.volume|intcomma}}</value></div>
+		<div class="col-sm-4">BTC Dominance:<value>{{banner.btc_dominance}}%</value></div>
 	</div>
 </div>
 

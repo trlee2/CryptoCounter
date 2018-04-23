@@ -1,6 +1,7 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico, WatchItem, WatchIco
+from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import datetime, timedelta, timezone
 
@@ -112,11 +113,6 @@ def getIcoDetails(iname):
 
     return icoData
 
-# add a coin to user's watchlist when on Market page
-def addWatchedCoin(username, coin):
-    #TODO
-    return
-
 # returns coins a user watches
 def getWatchedCoins(uname):
     coinList = []
@@ -225,3 +221,33 @@ def getSearchTerms():
         terms.append(str(i.ico_name))
 
     return terms
+
+# retrieve banner stats
+def getBannerData():
+    stats = GeneralMarket.objects.first()
+    print(stats)
+    return stats
+
+# check if coin anme
+def isCoinName(cname):
+    try:
+        c = Coin.objects.get(coin_name = cname)
+        return True
+    except ObjectDoesNotExist:
+        return False
+
+# check if coin ticker
+def isCoinTicker(tick):
+    try:
+        c = Coin.objects.get(ticker = tick)
+        return c.coin_name
+    except ObjectDoesNotExist:
+        return None
+
+# check if ICO name
+def isIcoName(iname):
+    try:
+        i = Ico.objects.get(ico_name = iname)
+        return True
+    except ObjectDoesNotExist:
+        return False
