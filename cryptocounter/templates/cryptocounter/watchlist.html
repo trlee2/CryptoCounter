@@ -55,7 +55,7 @@
 
      {% for i in watchCoins %}
      <tr>
-       <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+       <td><a href="watchlist/deletecoin/{{i.coin_id}}"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></td>
        <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
        {% load humanize %}
        <td>{{i.ticker}}</td>
@@ -81,7 +81,7 @@
 
     {% for i in watchIcos %}
     <tr>
-      <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+      <td><a href="watchlist/deleteico/{{i.ico_id}}"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></td>
       {% if i.daysRemaining.days >= 0 %}
       <td style="color:green;">{{i.daysRemaining.days}}</td>
       {% else %}

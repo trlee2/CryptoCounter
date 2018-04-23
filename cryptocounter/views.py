@@ -48,6 +48,20 @@ def addWatchlistCoin(request, cid):
     else:
         return HttpResponseRedirect('/market')
 
+def deleteWatchlistCoin(request, cid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            deleteWatchedCoin(request.user.username, cid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/market')
+
 def addWatchlistIco(request, iid):
     # only for adding a coin
     if request.method == 'GET':
@@ -55,6 +69,20 @@ def addWatchlistIco(request, iid):
         if request.user.is_authenticated:
             # try to add coin to track
             addWatchedIco(request.user.username, iid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/ico')
+
+def deleteWatchlistIco(request, iid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            deleteWatchedIco(request.user.username, iid)
             return HttpResponseRedirect('/watchlist')
         # user not logged in
         else:
