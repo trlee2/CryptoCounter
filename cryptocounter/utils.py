@@ -307,7 +307,7 @@ def getCoinTweets(coinName):
 	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
 	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
 	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
-	MAX_TWEETS = 10
+	MAX_TWEETS = 100
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth)
