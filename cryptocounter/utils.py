@@ -228,7 +228,7 @@ def getBannerData():
     print(stats)
     return stats
 
-# check if coin anme
+# check if coin name
 def isCoinName(cname):
     try:
         c = Coin.objects.get(coin_name = cname)
