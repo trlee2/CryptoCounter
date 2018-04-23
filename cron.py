@@ -290,9 +290,12 @@ Retive Facebook likes for given name
 @returns	int
 '''	
 def getFacebook(name):
+	num = -1
 	at="EAACEdEose0cBAORxeZAHLG9ASHffhYmrcauso0pwPeD7baoAGflymDvDYDhXDe8CeWU1umVfAZB6kiHfg9kvnY6nCqmRuiUbTUOMxZC6NYIVTsoirJqS6h8wz48Ua24b6NiL7gh98FP0s2IDjZABqqHZAZBaA1HZBpKfTgyV5NMm1HUiHME6kP2MBfrdm3HTSEZD"
 	res = getAPI("https://graph.facebook.com/"+name+"/?fields=fan_count&access_token="+at)
-	return res["fan_count"]
+	if("fan_count" in res.keys()):
+		num = res["fan_count"]
+	return num
 
 '''
 Loops through keys and retrives a good link for the news
@@ -529,7 +532,7 @@ def parseICOFacebook(terms):
 	for t in terms:
 		list = {}
 		list["name"] = t
-		list["likes"] = 1#getFacebook(t)
+		list["likes"] = getFacebook(t)
 		icoList.append(list)
 	return icoList
 
@@ -1099,10 +1102,10 @@ for currentArgument, currentValue in arguments:
 		icoList = []
 		for z in range(0, len(icoInfo)):
 			icoList.append(icoInfo[z][1])
-		fb = getFacebook("bitcoin")
+			
+		print(parseICOFacebook(icoList))
 		
-		pFB = parseGeneralFacebook()
-		print(fb)
+		
 		#plist = parseFacebook(trackedCoins)
 		#pGoogle = getGoogleTrends("bitcoin")
 		#for k in pGoogle.keys():
