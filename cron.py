@@ -258,7 +258,6 @@ def getRedditSub(list):
 	for l in list:
 		red = {}
 		red["name"] = l
-		print(l)
 		try:
 			sub = reddit.subreddit(l)			
 			red["sub"] = sub.subscribers
@@ -341,7 +340,7 @@ def parseGeneralTwitter():
 	num = 0;
 	for i in range(0,len(terms)):
 		print("-> Working on getting twitter info: "+terms[i])
-		num += getTwitter(terms[i])
+		num += 1#getTwitter(terms[i])
 	return num
 def parseGeneralReddit():
 	return getRedditSub(["cryptocurrency"])[0]["sub"]
@@ -516,6 +515,7 @@ def parseICOTwitter(terms):
 	print("Note: Working on ICO Twitter, this may take a long time")
 	icoList = []
 	for t in terms:
+		print("-> Working on getting twitter info: "+t)
 		list = {}
 		list["name"] = t
 		list["tweets"] = 1 #getTwitter(t)
@@ -668,7 +668,7 @@ def updateOverallSocial():
 		pFB = parseGeneralFacebook()
 		
 		dt = str(datetime.datetime.fromtimestamp(now))
-		cur.execute("INSERT INTO cryptocounter_overallsocial (date, num_tweets, num_subs, num_likes, num_articles) VALUES('{}',{},{},{},{})".format(dt,pTweet,pReddit,pFB,pNews))
+		cur.execute("INSERT INTO cryptocounter_overallsocial (date, num_tweets, num_subs, num_likes, num_articles, num_trends) VALUES('{}',{},{},{},{},{})".format(dt,pTweet,pReddit,pFB,pNews,1))
 		print("Current overall social added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
 	else:
 		print("ALERT: Skipping current overall social, duplicate")
@@ -708,7 +708,7 @@ def updateSocialCoin():
 			coinSub = pReddit[i]["subscribers"]
 			coinLikes = pFB[i]["likes"]
 			
-			cur.execute("INSERT INTO cryptocounter_socialcoin (date, num_tweets, num_subs, num_likes, num_articles, coin_id_id) VALUES('{}',{},{},{},{},{})".format(dt,coinTweet,coinSub,coinLikes,coinNews,coinID))
+			cur.execute("INSERT INTO cryptocounter_socialcoin (date, num_tweets, num_subs, num_likes, num_articles, num_trends, coin_id_id) VALUES('{}',{},{},{},{},{},{})".format(dt,coinTweet,coinSub,coinLikes,coinNews,1,coinID))
 		print("Current social coin added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
 	else:
 		print("ALERT: Skipping current social coin, duplicate")
@@ -757,7 +757,7 @@ def updateSocialICO():
 			icoSub = pReddit[i]["sub"]
 			icoLikes = pFB[i]["likes"]
 
-			cur.execute("INSERT INTO cryptocounter_socialico (date, num_tweets, num_subs, num_likes, num_articles, ico_id_id) VALUES('{}',{},{},{},{},{})".format(dt,icoTweet,icoSub,icoLikes,icoNews,icoID))
+			cur.execute("INSERT INTO cryptocounter_socialico (date, num_tweets, num_subs, num_likes, num_articles, num_trends, ico_id_id) VALUES('{}',{},{},{},{},{},{})".format(dt,icoTweet,icoSub,icoLikes,icoNews,1,icoID))
 		print("Current social ICO added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
 	else:
 		print("ALERT: Skipping current social ICO, duplicate")
