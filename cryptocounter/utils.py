@@ -1,5 +1,5 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket
+from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -50,6 +50,7 @@ def getIcoInfo():
 # return all data on an individual coin
 def getCoinDetails(cname):
     coinHistory = []
+    coinSocialHistory = []
     # get coin info
     try:
         coin = Coin.objects.get(coin_name=cname)
@@ -79,13 +80,33 @@ def getCoinDetails(cname):
     except:
         print('No pricing data for coin found')
 
-    # TODO: get coin's social trends
+    # get coin's social trends
+    try:
+        social = SocialCoin.objects.filter(coin_id=coin.coin_id, date__gte=time).order_by('-date')
+
+        # create data points
+        for c in social:
+            temp = {}
+            pyDate = c.date
+            year = pyDate.year
+            day = pyDate.day
+            month = pyDate.month - 1
+            temp['year'] = year
+            temp['month'] = month
+            temp['day'] = day
+            temp['num_tweets'] = c.num_tweets
+            temp['num_subs'] = c.num_subs
+            temp['num_likes'] = c.num_likes
+            temp['num_articles'] = c.num_articles
+            coinSocialHistory.append(temp)
+    except:
+        print('No social data for coin found')
 
     # send back the relevant info
     coinData = {'coin_name':coin.coin_name, 'ticker':coin.ticker, 'price':coinPrice.price,
     'circ_supply':coinPrice.circ_supply, 'percent_change':coinPrice.percent_change, 'market_cap':coinPrice.market_cap}
 
-    return {'coinData':coinData, 'coinHistory':coinHistory}
+    return {'coinData':coinData, 'coinHistory':coinHistory, 'coinSocial':coinSocialHistory}
 
 # return all data on an individual ICO
 def getIcoDetails(iname):
@@ -125,7 +146,7 @@ def getWatchedCoins(uname):
             p = Price.objects.filter(coin_id = c.coin_id).order_by('-date')
             names = Coin.objects.get(coin_id = c.coin_id.coin_id)
             pData = p[0]
-            temp = {'coin_name':names.coin_name, 'ticker':names.ticker, 'price':pData.price,
+            temp = {'coin_id':names.coin_id, 'coin_name':names.coin_name, 'ticker':names.ticker, 'price':pData.price,
             'circ_supply':pData.circ_supply, 'percent_change':pData.percent_change, 'market_cap':pData.market_cap}
             coinList.append(temp)
     except:
@@ -182,6 +203,20 @@ def addWatchedCoin(uname, cid):
         print("Coin now being tracked")
     return
 
+# remove a coin from watchlist
+def deleteWatchedCoin(uname, cid):
+    # check if coin not being tracked by user
+    if not WatchItem.objects.filter(username__username=uname, coin_id=cid).exists():
+        print("Coin is not being tracked by user")
+        return
+    # get user instance
+    user = User.objects.get(username = uname)
+    coin = Coin.objects.get(coin_id = cid)
+
+    # remove coin
+    item = WatchItem.objects.get(username=user, coin_id=coin).delete()
+    return
+
 # add an ICO to a user's Watchlist
 def addWatchedIco(uname, iid):
     # check if ICO already being tracked by user
@@ -201,6 +236,20 @@ def addWatchedIco(uname, iid):
         return
     else:
         print("ICO now being tracked")
+    return
+
+# remove a coin from watchlist
+def deleteWatchedIco(uname, iid):
+    # check if coin not being tracked by user
+    if not WatchIco.objects.filter(username__username=uname, ico_id=iid).exists():
+        print("ICO is not being tracked by user")
+        return
+    # get user instance
+    user = User.objects.get(username = uname)
+    ico = Ico.objects.get(ico_id = iid)
+
+    # remove coin
+    item = WatchIco.objects.get(username=user, ico_id=ico).delete()
     return
 
 # coin/ico name and ticker for search bar
@@ -225,7 +274,6 @@ def getSearchTerms():
 # retrieve banner stats
 def getBannerData():
     stats = GeneralMarket.objects.first()
-    print(stats)
     return stats
 
 # check if coin name

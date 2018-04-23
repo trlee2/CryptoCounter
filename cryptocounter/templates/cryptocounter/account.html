@@ -16,7 +16,7 @@
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
   $(function(){
@@ -34,55 +34,27 @@
   <div id="header"></div>
   <!--Remaining section-->
   <div class="container">
-    <form class="form-horizontal" role="form">
+    <form class="form-horizontal" role="form" method="POST">
       <h3>Account Management</h3>
+      {% if success %}
+        <h4 style="color:green; text-align: left;">Account Succesfully Updated!</h4>
+      {% endif %}
+      <h5 style="color:red; text-align: left;">{{errorEmail}}</h5>
+      <h5 style="color:red; text-align: left;">{{errorPassword}}</h5>
+      {% csrf_token %}
+      {% for field in form %}
       <div class="form-group">
-        <label for="firstName" class="col-sm-3 control-label">First Name</label>
+        <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
         <div class="col-sm-9">
-          <input type="text" id="firstName" placeholder="Harry" class="form-control" required="" autofocus>
+          {{field}}
         </div>
       </div>
-      <div class="form-group">
-        <label for="firstName" class="col-sm-3 control-label">Last Name</label>
-        <div class="col-sm-9">
-          <input type="text" id="lastName" placeholder="Johnson" class="form-control" required="" autofocus>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="username" class="col-sm-3 control-label">Username</label>
-        <div class="col-sm-9">
-          <input type="email" id="email" placeholder="Username" required="" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="email" class="col-sm-3 control-label">Email</label>
-        <div class="col-sm-9">
-          <input type="email" id="email" placeholder="Email" required="" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="currPassword" class="col-sm-3 control-label">Current Password</label>
-        <div class="col-sm-9">
-          <input type="newPassword" id="password" placeholder="Current Password" required="" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="NewPassword" class="col-sm-3 control-label">New Password</label>
-        <div class="col-sm-9">
-          <input type="password" id="password" placeholder="New Password" required="" class="form-control">
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="confirmNewPassword" class="col-sm-3 control-label">Confirm New Password</label>
-        <div class="col-sm-9">
-          <input type="password" id="password" placeholder="Confirm Password" required="" class="form-control">
-        </div>
-      </div>
+      {% endfor %}
       <!-- /.form-group -->
 
       <div class="form-group">
         <div class="col-sm-12">
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Delete Account</button>
+          <button class="btn btn-lg btn-primary btn-block"><a href='/market' style="color:white;">Delete Account</a></button>
         </div>
       </div>
       <div class="form-group">

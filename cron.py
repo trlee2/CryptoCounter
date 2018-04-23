@@ -290,8 +290,12 @@ Retive Facebook likes for given name
 @returns	int
 '''	
 def getFacebook(name):
-	#TODO
-	return 1;
+	num = -1
+	at="EAACEdEose0cBAORxeZAHLG9ASHffhYmrcauso0pwPeD7baoAGflymDvDYDhXDe8CeWU1umVfAZB6kiHfg9kvnY6nCqmRuiUbTUOMxZC6NYIVTsoirJqS6h8wz48Ua24b6NiL7gh98FP0s2IDjZABqqHZAZBaA1HZBpKfTgyV5NMm1HUiHME6kP2MBfrdm3HTSEZD"
+	res = getAPI("https://graph.facebook.com/"+name+"/?fields=fan_count&access_token="+at)
+	if("fan_count" in res.keys()):
+		num = res["fan_count"]
+	return num
 
 '''
 Loops through keys and retrives a good link for the news
@@ -1098,12 +1102,14 @@ for currentArgument, currentValue in arguments:
 		icoList = []
 		for z in range(0, len(icoInfo)):
 			icoList.append(icoInfo[z][1])
-		#pFB = parseGeneralFacebook(terms)
+			
+		print(parseICOFacebook(icoList))
+		
+		
 		#plist = parseFacebook(trackedCoins)
-		pGoogle = getGoogleTrends("bitcoin")
-		for k in pGoogle.keys():
-			print(str(datetime.datetime.fromtimestamp(int(k)/1000).strftime('%Y-%m-%d %H:%M:%S')))
-		#pprint.pprint()
+		#pGoogle = getGoogleTrends("bitcoin")
+		#for k in pGoogle.keys():
+			#print(str(datetime.datetime.fromtimestamp(int(k)/1000).strftime('%Y-%m-%d %H:%M:%S')))
 		### End of testing code ###
 		sys.exit(0)
 
