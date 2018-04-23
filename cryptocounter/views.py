@@ -6,8 +6,6 @@ from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm, UserLoginForm
 
-from .models import WatchItem
-
 from .utils import *
 
 # Create your views here.
@@ -188,3 +186,21 @@ def header(request):
 
 def footer(request):
     return render(request, 'cryptocounter/footer.html')
+
+def search(request):
+    # get the search input
+    t = request.GET.get('term', '')
+
+    # check if coin ticker
+    n = isCoinTicker(t)
+    if n is not None:
+        return HttpResponseRedirect('/coindetails/'+n+'/')
+    # check if coin name
+    elif isCoinName(t):
+        return HttpResponseRedirect('/coindetails/'+t+'/')
+    # check if ico name
+    elif isIcoName(t):
+        return HttpResponseRedirect('/icodetails/'+t+'/')
+    # coin does not exist
+    else:
+        return HttpResponseRedirect('/market')

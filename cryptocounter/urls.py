@@ -22,4 +22,5 @@ urlpatterns = [
     path('account', views.account, name='account'),
     path('coindetails/<str:cname>/', views.coinDetails, name='coindetails'),
     path('icodetails/<str:iname>/', views.icoDetails, name='icodetails'),
+    path('search', views.search, name='search'),
 ]
