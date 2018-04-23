@@ -1,5 +1,5 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket
+from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -50,6 +50,7 @@ def getIcoInfo():
 # return all data on an individual coin
 def getCoinDetails(cname):
     coinHistory = []
+    coinSocialHistory = []
     # get coin info
     try:
         coin = Coin.objects.get(coin_name=cname)
@@ -79,13 +80,33 @@ def getCoinDetails(cname):
     except:
         print('No pricing data for coin found')
 
-    # TODO: get coin's social trends
+    # get coin's social trends
+    try:
+        social = SocialCoin.objects.filter(coin_id=coin.coin_id, date__gte=time).order_by('-date')
+
+        # create data points
+        for c in social:
+            temp = {}
+            pyDate = c.date
+            year = pyDate.year
+            day = pyDate.day
+            month = pyDate.month - 1
+            temp['year'] = year
+            temp['month'] = month
+            temp['day'] = day
+            temp['num_tweets'] = c.num_tweets
+            temp['num_subs'] = c.num_subs
+            temp['num_likes'] = c.num_likes
+            temp['num_articles'] = c.num_articles
+            coinSocialHistory.append(temp)
+    except:
+        print('No social data for coin found')
 
     # send back the relevant info
     coinData = {'coin_name':coin.coin_name, 'ticker':coin.ticker, 'price':coinPrice.price,
     'circ_supply':coinPrice.circ_supply, 'percent_change':coinPrice.percent_change, 'market_cap':coinPrice.market_cap}
 
-    return {'coinData':coinData, 'coinHistory':coinHistory}
+    return {'coinData':coinData, 'coinHistory':coinHistory, 'coinSocial':coinSocialHistory}
 
 # return all data on an individual ICO
 def getIcoDetails(iname):

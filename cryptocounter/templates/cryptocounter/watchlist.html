@@ -16,7 +16,7 @@
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
   $(function(){
@@ -52,7 +52,7 @@
 			<th>Percent Change</th>
 			<th>Market Cap</th>
 		 </tr>
-	
+
      {% for i in watchCoins %}
      <tr>
        <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
@@ -65,8 +65,8 @@
        <td>${{i.market_cap|intcomma}}</td>
      </tr>
      {% endfor %}
-     <a style="margin-left: 10%; margin-top: 10px;" href="/market" class="btn btn-default">Add Coins to Watchlist</a>
 	</table>
+  <a style="margin-left: 10%; margin-top: 10px;" href="/market" class="btn btn-default">Add Coins to Watchlist</a>
 	<hr>
 	<h4 class="tableHead" >My Tracked ICOs:</h4>
 	<table class="icoTable">
