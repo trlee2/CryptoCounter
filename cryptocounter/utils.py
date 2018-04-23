@@ -2,6 +2,7 @@
 from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+import tweepy
 
 from datetime import datetime, timedelta, timezone
 
@@ -299,3 +300,20 @@ def isIcoName(iname):
         return True
     except ObjectDoesNotExist:
         return False
+
+# return tweets for the coin
+def getCoinTweets(coinName):
+	consumer_key = 6toOrdLOCWsNo9sg5qgsQm9uX
+	consumer_secret = MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl
+	access_token = 983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE
+	access_token_secret = INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj
+
+	MAX_TWEETS = 10
+	
+	auth = tweepy.OAuthHandler(CONSUMER_TOKEN, CONSUMER_SECRET)
+	api = tweepy.API(auth)
+	coinTweets = tweepy.Cursor(api.search, q='#'+coinName, rpp=100).items(MAX_TWEETS)
+	return render(request, 'coinTemplate.html', {'coinTweets': coinTweets})
+	#for tweet in tweepy.Cursor(api.search, q='#python', rpp=100).items(MAX_TWEETS):
+		# Do something
+		#pass
