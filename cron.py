@@ -529,7 +529,7 @@ def parseICOFacebook(terms):
 	for t in terms:
 		list = {}
 		list["name"] = t
-		list["likes"] = getFacebook(t)
+		list["likes"] = 1#getFacebook(t)
 		icoList.append(list)
 	return icoList
 
@@ -1102,7 +1102,7 @@ for currentArgument, currentValue in arguments:
 		fb = getFacebook("bitcoin")
 		
 		pFB = parseGeneralFacebook()
-		print(pFB)
+		print(fb)
 		#plist = parseFacebook(trackedCoins)
 		#pGoogle = getGoogleTrends("bitcoin")
 		#for k in pGoogle.keys():
