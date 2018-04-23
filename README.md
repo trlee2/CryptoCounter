@@ -27,6 +27,9 @@ $ pip install psycopg2
 ```shell
 $ pip install requests
 $ pip install apscheduler
+$ pip install TwitterAPI
+$ pip install pytrends
+$ pip install praw
 ```
 6. Build the tables
 ```shell

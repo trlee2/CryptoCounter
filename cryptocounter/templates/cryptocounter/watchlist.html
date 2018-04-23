@@ -56,7 +56,7 @@
 
      {% for i in watchCoins %}
      <tr>
-       <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+       <td><a href="watchlist/deletecoin/{{i.coin_id}}"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></td>
        <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
        {% load humanize %}
        <td>{{i.ticker}}</td>
@@ -66,8 +66,8 @@
        <td>${{i.market_cap|intcomma}}</td>
      </tr>
      {% endfor %}
-
 	</table>
+  <a style="margin-left: 10%; margin-top: 10px;" href="/market" class="btn btn-default">Add Coins to Watchlist</a>
 	<hr>
 	<h4 class="tableHead" >My Tracked ICOs:</h4>
 	<table class="icoTable">
@@ -82,7 +82,7 @@
 
     {% for i in watchIcos %}
     <tr>
-      <td><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></td>
+      <td><a href="watchlist/deleteico/{{i.ico_id}}"><button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></a></td>
       {% if i.daysRemaining.days >= 0 %}
       <td style="color:green;">{{i.daysRemaining.days}}</td>
       {% else %}
@@ -95,6 +95,7 @@
     </tr>
     {% endfor %}
 	</table>
+    <a style="margin-left: 10%; margin-top: 10px;" href="/ico" class="btn btn-default">Add Initial Coin Offerings to Watchlist</a>
 
 
   <div id="footer"></div>

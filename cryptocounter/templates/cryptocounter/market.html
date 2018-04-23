@@ -242,25 +242,31 @@
   <div>
     <table>
       <tr>
-        <th class="marketTable"></th>
+        <th></th>
         <th>Coin</th>
         <th>Ticker</th>
         <th>Price</th>
         <th>Circulating Supply</th>
         <th>Percent Change</th>
         <th>Market Cap</th>
+        
       </tr>
 
       {% for i in prices %}
       <tr>
-        <td class="marketTable"><a href="watchlist/addcoin/{{i.coin_id}}"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
+        <td><a href="watchlist/addcoin/{{i.coin_id}}"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
         <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
         {% load humanize %}
         <td>{{i.ticker}}</td>
         <td>${{i.price|intcomma}}</td>
         <td>{{i.circ_supply|intcomma}}</td>
-        <td>{{i.percent_change}}%</td>
+        {% if i.percent_change >= 0 %}
+		    <td style="color:green;">{{i.percent_change}}%</td>
+		    {% else %}
+		    <td style="color:red;">{{i.percent_change}}%</td>
+		    {% endif %}
         <td>${{i.market_cap|intcomma}}</td>
+        
       </tr>
       {% endfor %}
 

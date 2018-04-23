@@ -38,6 +38,9 @@
 
     <form class="form-signin", method="POST">
       <h2 class="form-signin-heading">Login</h2>
+      {% if error != None %}
+      <h5 style="color:red; text-align: center;">{{error}}</h5>
+      {% endif %}
       {% csrf_token %}
       {% for field in form %}
       <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
