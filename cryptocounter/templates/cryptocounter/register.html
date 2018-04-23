@@ -36,6 +36,7 @@
   <div class="container">
     <form class="form-horizontal" role="form" method="POST">
       <h2>Registration Form</h2>
+      <h5 style="color:red; text-align: center;">This is the error message</h5>
       {% csrf_token %}
       {% for field in form %}
       <div class="form-group">
