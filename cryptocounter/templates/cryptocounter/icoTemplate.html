@@ -303,14 +303,12 @@
 				var temp = document.getElementById("content");
 				var jsondata = JSON.parse(JSON.stringify(myJson));
 				for (var i = 0; i < jsondata.articles.length; i++) {
-					//document.getElementById("content").innerHTML = i;
 					article = jsondata.articles[i];
-					//console.log(article.title);
-					//document.getElementById("content").innerHTML = article.title;
 					if(article.source.name != "Bleepingcomputer.com"){
-					temp.insertAdjacentHTML("beforeend", '<div>'+article.title+'</div>'
-														+'<div>'+article.description+'</div>'
-														+'<div><a href='+article.url+'>'+article.url+'</a></div>');
+						if(article.description !=""){
+						temp.insertAdjacentHTML("beforeend", '<div><a href='+article.url+'>'+article.title+'</a></div>'
+															+'<div>'+article.description+'</div>');
+						}
 					}
 				}
 			});

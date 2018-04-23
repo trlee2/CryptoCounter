@@ -224,7 +224,7 @@
 
 <script>
 	var url = 'https://newsapi.org/v2/everything?' +
-          'q={{coin.coin_name}}&' +
+          'q=bitcoin&' +
           'sortBy=new&' +
           'apiKey=657d2f7da373497480f8e8081f7efad2';
 
@@ -238,14 +238,12 @@ fetch(req)
 		var temp = document.getElementById("content");
 		var jsondata = JSON.parse(JSON.stringify(myJson));
 		for (var i = 0; i < jsondata.articles.length; i++) {
-			//document.getElementById("content").innerHTML = i;
 			article = jsondata.articles[i];
-			//console.log(article.title);
-			//document.getElementById("content").innerHTML = article.title;
 			if(article.source.name != "Bleepingcomputer.com"){
-			temp.insertAdjacentHTML("beforeend", '<div>'+article.title+'</div>'
-												+'<div>'+article.description+'</div>'
-												+'<div><a href='+article.url+'>'+article.url+'</a></div>');
+				if(article.description !=""){
+				temp.insertAdjacentHTML("beforeend", '<div><a href='+article.url+'>'+article.title+'</a></div>'
+													+'<div>'+article.description+'</div>');
+				}
 			}
 		}
 	});
