@@ -152,6 +152,9 @@ coinStatValue {
 		margin-bottom: 25px;
 		padding: 2%;
 	}
+	.encap {
+		text-align: left;
+	}
 }
 
 /* Custom page CSS
