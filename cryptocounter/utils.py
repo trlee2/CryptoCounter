@@ -312,7 +312,7 @@ def getCoinTweets(coinName):
 	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth)
 	coinTweets = tweepy.Cursor(api.search, q='#'+coinName, rpp=100).items(MAX_TWEETS)
-	return render(request, 'coinTemplate.html', {'coinTweets': coinTweets})
+	return  {'coinTweets': coinTweets}
 	#for tweet in tweepy.Cursor(api.search, q='#python', rpp=100).items(MAX_TWEETS):
 		# Do something
 		#pass
