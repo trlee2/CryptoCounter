@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm, UserLoginForm, UserAccountForm
@@ -231,6 +231,14 @@ def account(request):
                 # success
                 success = True
                 return render(request, 'cryptocounter/account.html', {'form':form, 'errorEmail':errorEmail, 'errorPassword':errorPassword, 'success':success})
+    return HttpResponseRedirect('/login')
+
+def deleteAccount(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            username = request.user.username
+            auth_logout(request)
+            user = User.objects.get(username__exact = username).delete()
     return HttpResponseRedirect('/login')
 
 def header(request):
