@@ -306,9 +306,11 @@
 				for (var i = 0; i < jsondata.articles.length; i++) {
 					article = jsondata.articles[i];
 					if(article.source.name != "Bleepingcomputer.com"){
-						if(article.description !=""){
-						temp.insertAdjacentHTML("beforeend", '<div><a href='+article.url+'>'+article.title+'</a></div>'
-															+'<div>'+article.description+'</div>');
+						if(article.source.name != "deviantart.com"){
+							if(article.description !=""){
+							temp.insertAdjacentHTML("beforeend", '<div><a href='+article.url+'>'+article.title+'</a></div>'
+																+'<div>'+article.description+'</div>');
+							}
 						}
 					}
 				}
