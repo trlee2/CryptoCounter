@@ -53,3 +53,11 @@ class UserLoginForm(forms.Form):
         max_length = 32,
         widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'})
     )
+#search bar form
+class CoinSearchForm(forms.Form):
+    term = forms.CharField(
+        required = True,
+        label = 'Search',
+        max_length = 50,
+        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Search'})
+    )
