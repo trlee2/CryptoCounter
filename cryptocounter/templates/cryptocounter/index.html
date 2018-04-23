@@ -16,7 +16,7 @@
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
   $(function(){
@@ -37,7 +37,9 @@
 
     <form class="form-signin", method="POST">
       <h2 class="form-signin-heading">Login</h2>
-      <h5 style="color:red; text-align: center;">This is the error message, you done fucked up</h5>
+      {% if error != None %}
+      <h5 style="color:red; text-align: center;">{{error}}</h5>
+      {% endif %}
       {% csrf_token %}
       {% for field in form %}
       <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
