@@ -48,6 +48,20 @@ def addWatchlistCoin(request, cid):
     else:
         return HttpResponseRedirect('/market')
 
+def deleteWatchlistCoin(request, cid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            deleteWatchedCoin(request.user.username, cid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/market')
+
 def addWatchlistIco(request, iid):
     # only for adding a coin
     if request.method == 'GET':
@@ -62,15 +76,30 @@ def addWatchlistIco(request, iid):
     else:
         return HttpResponseRedirect('/ico')
 
+def deleteWatchlistIco(request, iid):
+    # only for adding a coin
+    if request.method == 'GET':
+        # check to see if user is logged in
+        if request.user.is_authenticated:
+            # try to add coin to track
+            deleteWatchedIco(request.user.username, iid)
+            return HttpResponseRedirect('/watchlist')
+        # user not logged in
+        else:
+            return HttpResponseRedirect('/login')
+    else:
+        return HttpResponseRedirect('/ico')
+
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)
-    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory']})
+    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory'], 'coinSocial':coinData['coinSocial']})
 
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)
     return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData})
 
 def login(request):
+    error = None
     if request.method == 'POST':
         # get form data
         form = UserLoginForm(request.POST)
@@ -89,12 +118,18 @@ def login(request):
                 # redirect to watchlist
                 return HttpResponseRedirect('/watchlist')
             else:
-                raise forms.ValidationError('Username or password incorrect')
+                #raise forms.ValidationError('Username or password incorrect')
+                error = 'Username or password is incorrect'
+                return render(request, 'cryptocounter/index.html', {'form':form, 'error':error})
     else:
         form = UserLoginForm()
-    return render(request, 'cryptocounter/index.html', {'form' : form})
+    return render(request, 'cryptocounter/index.html', {'form':form, 'error':error})
 
 def register(request):
+    errorUname = ''
+    errorEmail = ''
+    errorPassword = ''
+    errorExists = False
     if request.method == 'POST':
         # get form data
         form = UserRegistrationForm(request.POST)
@@ -111,10 +146,22 @@ def register(request):
 
             # username in use
             if User.objects.filter(username=username).exists():
-                raise forms.ValidationError('Sorry, that username has already been taken!')
+                #raise forms.ValidationError('Sorry, that username has already been taken!')
+                errorUname = 'Sorry, that username has already been taken!'
+                errorExists = True
             # email in use
-            elif User.objects.filter(email=email).exists():
-                raise forms.ValidationError('Sorry, that email is already in use!')
+            if User.objects.filter(email=email).exists():
+                #raise forms.ValidationError('Sorry, that email is already in use!')
+                errorEmail = 'Sorry, that email is already in use!'
+                errorExists = True
+            # passwords don't match
+            if password != confirmPassword:
+                #raise forms.ValidationError('Sorry, passwords do not match!')
+                errorPassword = 'Passwords do not match!'
+                errorExists = True
+
+            if errorExists:
+                return render(request, 'cryptocounter/register.html', {'form':form, 'errorUname':errorUname, 'errorEmail':errorEmail, 'errorPassword':errorPassword})
             # create user
             else:
                 newUser = User.objects.create_user(username, email, password)
@@ -128,7 +175,7 @@ def register(request):
                 return HttpResponseRedirect('/watchlist')
     else:
         form = UserRegistrationForm()
-    return render(request, 'cryptocounter/register.html', {'form' : form})
+    return render(request, 'cryptocounter/register.html', {'form':form, 'errorUname':errorUname, 'errorEmail':errorEmail, 'errorPassword':errorPassword})
 
 def account(request):
     return render(request, 'cryptocounter/account.html')
@@ -136,7 +183,8 @@ def account(request):
 def header(request):
     loggedin = request.user.is_authenticated
     terms = getSearchTerms()
-    return render(request, 'cryptocounter/header.html', {'loggedin':loggedin, 'searchTerms':terms})
+    stats = getBannerData()
+    return render(request, 'cryptocounter/header.html', {'loggedin':loggedin, 'searchTerms':terms, 'banner':stats})
 
 def footer(request):
     return render(request, 'cryptocounter/footer.html')
