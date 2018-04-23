@@ -39,6 +39,45 @@ class UserRegistrationForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'})
     )
 
+# Account Page Form
+class UserAccountForm(forms.Form):
+    firstName = forms.CharField(
+        required = True,
+        label = 'First Name',
+        max_length = 32,
+        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'})
+    )
+    lastName = forms.CharField(
+        required = True,
+        label = 'Last Name',
+        max_length = 32,
+        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Last Name'})
+    )
+    email = forms.EmailField(
+        required = True,
+        label = 'Email',
+        max_length = 50,
+        widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Email'})
+    )
+    username = forms.CharField(
+        required = True,
+        label = 'Username',
+        max_length = 32,
+        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Username', 'readonly':'readonly'})
+    )
+    password = forms.CharField(
+        required = False,
+        label = 'New Password',
+        max_length = 32,
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'})
+    )
+    confirmPassword = forms.CharField(
+        required = False,
+        label = 'Confirm New Password',
+        max_length = 32,
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Password'})
+    )
+
 # login form
 class UserLoginForm(forms.Form):
     username = forms.CharField(

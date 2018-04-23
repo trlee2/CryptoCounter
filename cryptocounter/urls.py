@@ -20,6 +20,8 @@ urlpatterns = [
     path('logout', auth_views.logout, {'next_page': 'market'}, name='logout'),
     path('register', views.register, name='register'),
     path('account', views.account, name='account'),
+    path('deleteaccount', views.deleteAccount, name='deleteaccount'),
     path('coindetails/<str:cname>/', views.coinDetails, name='coindetails'),
     path('icodetails/<str:iname>/', views.icoDetails, name='icodetails'),
+    path('search', views.search, name='search'),
 ]

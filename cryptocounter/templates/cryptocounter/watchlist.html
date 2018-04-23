@@ -16,10 +16,7 @@
 
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<<<<<<< HEAD
-=======
 
->>>>>>> 702349019b406897377bc1eb3d85b6803505e92d
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script>
   $(function(){
@@ -64,7 +61,11 @@
        <td>{{i.ticker}}</td>
        <td>${{i.price|intcomma}}</td>
        <td>{{i.circ_supply|intcomma}}</td>
-       <td>{{i.percent_change}}%</td>
+       {% if i.percent_change >= 0 %}
+       <td style="color:green;">{{i.percent_change}}%</td>
+       {% else %}
+       <td style="color:red;">{{i.percent_change}}%</td>
+       {% endif %}
        <td>${{i.market_cap|intcomma}}</td>
      </tr>
      {% endfor %}
