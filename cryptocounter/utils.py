@@ -277,7 +277,7 @@ def getBannerData():
     stats = GeneralMarket.objects.first()
     return stats
 
-# check if coin anme
+# check if coin name
 def isCoinName(cname):
     try:
         c = Coin.objects.get(coin_name = cname)
