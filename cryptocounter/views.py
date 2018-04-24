@@ -95,7 +95,8 @@ def coinDetails(request, cname):
 
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)
-    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData})
+    icoTweets = getICOTweets(iname)
+    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData['icoData'], 'icoTweets':icoTweets['icoTweets']})
 
 def login(request):
     error = None
