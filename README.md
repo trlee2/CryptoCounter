@@ -54,3 +54,9 @@ long argument   short argument  definition
                                     Default: 184 days (6 months)
 -----------------------------------------------------------------------------
 ```
+9. When running cron for the first time, it may take over an hour or more to load in data. If it looks like the program is hanging, do not worry, this is just cron handling data. Twitter is also disabled for overall social and ICO social data on the backend, due to the time it takes to record the info. Instead it is recorded as a -1.
+
+9a. The default for cron is 184 days of historical prices. To speed up cron, set historical days to a smaller number like 3 for an example.
+```shell
+$ python cron.py -p 3
+```
