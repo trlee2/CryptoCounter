@@ -1,11 +1,11 @@
-CS 506 Project
+CS 506 Project, Crypto Counter
 
 <p>Python version 3.6.x</p>
 <p>Django version 2.0.x</p>
 
 Installation:
-1. Use link below to configure Python and Django on your machine (versions above).  Your choice to use the Python in the main environment or setup a virtual environment (VE recommended).  
-NOTE: All the commands with python and pip below have them set to default to python3 and pip3 if these are not the defaults on your machine you will need to use pip3 instead of pip or python3 instead of python in the terminal commands listed below.
+1. Use link below to configure Python3 and pip (package manager) on your machine.  Your choice to use the Python in the main environment or setup a virtual environment (VE recommended).  
+**NOTE:** All the commands with python and pip below have them set to default to python3 and pip3 if these are not the defaults on your machine you will need to use pip3 instead of pip or python3 instead of python in the terminal commands listed below.
 <https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment>
 2. Clone the GitHub repo from <https://github.com/trlee2/CryptoCounter>
 3. Install PostgreSQL on your machine
@@ -17,7 +17,7 @@ NOTE: All the commands with python and pip below have them set to default to pyt
   $ brew install postgresql
   $ brew services start postgres
   ```
-  c. On Linux
+  * On Linux:
   ```shell
   $ sudo apt-get install postgresql
   ```
@@ -26,12 +26,24 @@ NOTE: All the commands with python and pip below have them set to default to pyt
 $ createdb cryptoDB
 $ psql cryptoDB
 ```
+**or**
+```shell
+$ psql postgres
+postgres=# CREATE DATABASE cryptoDB;
+postgres=# \q
+$ psql cryptoDB
+```
+**then**
 ```shell
 cryptoDB=# CREATE USER ccadmin WITH PASSWORD '1';
 cryptoDB=# GRANT ALL ON DATABASE "cryptoDB" TO ccadmin;
 cryptoDB=# \q
 ```
-5. Install PostgreSQL Python adapter
+5. Install Django, version 2.0.x
+```shell
+$ pip install Django
+```
+6. Install PostgreSQL Python adapter
 ```shell
 $ pip install psycopg2
 ```
@@ -43,16 +55,16 @@ $ pip install TwitterAPI
 $ pip install pytrends
 $ pip install praw
 ```
-6. Build the tables using the command:
+7. Build the tables using the command (in project directory where manage.py resides):
 ```shell
 $ python manage.py migrate
 ```
-7. Start built-in Python Server and run cron (run cron with -p and a low number otherwise it will take a long time to scrape all the data; this will result in fewer data points in the graphs but you won't have to have cron running for 24+ hours first before you can run the server)
+8. Start built-in Python Server and run cron (run cron with -p and a low number otherwise it will take a long time to scrape all the data; this will result in fewer data points in the graphs but you won't have to have cron running for 24+ hours first before you can run the server)
 ```shell
 $ python manage.py runserver
 $ python cron.py
 ```
-8. Cron can also take arguments when ran
+9. Cron can also take arguments when ran
 ```shell
 $ python cron.py -h
 $ python cron.py -d (use this for debugging)
@@ -68,5 +80,5 @@ long argument   short argument  definition
 --debug            -d             Debug mode of testing as we code                                    
 -----------------------------------------------------------------------------
 ```
-9. Bugs can be found in GitHub's issue tracker at <https://github.com/trlee2/CryptoCounter/issues>
-10. Live site can be found at <https://cccounter.herokuapp.com>
+10. Bugs can be found in GitHub's issue tracker at <https://github.com/trlee2/CryptoCounter/issues>
+11. Live site can be found at <https://cccounter.herokuapp.com>
