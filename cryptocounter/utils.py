@@ -2,6 +2,7 @@
 from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+import tweepy
 
 from datetime import datetime, timedelta, timezone
 
@@ -34,7 +35,7 @@ def getCurrPrices():
 def getIcoInfo():
     data = []
     # get all tracked ICOs
-    icoData = Ico.objects.all()
+    icoData = Ico.objects.all().order_by('enddate')
     currTime = datetime.now(timezone.utc)
     for ico in icoData:
         # determine if ICO is live
@@ -276,7 +277,7 @@ def getBannerData():
     stats = GeneralMarket.objects.first()
     return stats
 
-# check if coin anme
+# check if coin name
 def isCoinName(cname):
     try:
         c = Coin.objects.get(coin_name = cname)
@@ -299,3 +300,29 @@ def isIcoName(iname):
         return True
     except ObjectDoesNotExist:
         return False
+
+# return tweets for the coin
+def getCoinTweets(coinName):
+	consumer_key = '6toOrdLOCWsNo9sg5qgsQm9uX'
+	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
+	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
+	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
+	MAX_TWEETS = 15
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	api = tweepy.API(auth)
+	coinTweets = tweepy.Cursor(api.search, q='#'+coinName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
+	return  {'coinTweets': coinTweets}
+
+# return tweets for the coin
+def getICOTweets(icoName):
+	consumer_key = '6toOrdLOCWsNo9sg5qgsQm9uX'
+	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
+	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
+	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
+	MAX_TWEETS = 15
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	api = tweepy.API(auth)
+	icoTweets = tweepy.Cursor(api.search, q='#'+icoName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
+	return  {'icoTweets': icoTweets}

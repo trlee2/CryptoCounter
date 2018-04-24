@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseRedirect
 from django import forms
 from .forms import UserRegistrationForm, UserLoginForm, UserAccountForm
@@ -90,11 +90,13 @@ def deleteWatchlistIco(request, iid):
 
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)
-    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory'], 'coinSocial':coinData['coinSocial']})
+    coinTweets = getCoinTweets(cname)
+    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory'], 'coinSocial':coinData['coinSocial'], 'coinTweets':coinTweets['coinTweets']})
 
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)
-    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData})
+    icoTweets = getICOTweets(iname)
+    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData, 'icoTweets':icoTweets['icoTweets']})
 
 def login(request):
     error = None
@@ -231,6 +233,14 @@ def account(request):
                 # success
                 success = True
                 return render(request, 'cryptocounter/account.html', {'form':form, 'errorEmail':errorEmail, 'errorPassword':errorPassword, 'success':success})
+    return HttpResponseRedirect('/login')
+
+def deleteAccount(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            username = request.user.username
+            auth_logout(request)
+            user = User.objects.get(username__exact = username).delete()
     return HttpResponseRedirect('/login')
 
 def header(request):

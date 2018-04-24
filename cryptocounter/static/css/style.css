@@ -139,7 +139,7 @@ coinStatValue {
 	margin-left: 0px;
 	margin-right: 0px;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
 
 	.coinStat {
 		width:80%;
@@ -237,4 +237,8 @@ value {
 	color: #38ACEC;
 	margin-left: 10px;
 	margin-right: 10px;
+}
+
+.article:nth-child(even) {
+    background-color: #dddddd;
 }
