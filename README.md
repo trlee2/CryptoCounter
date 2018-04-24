@@ -35,7 +35,7 @@ $ pip install praw
 ```shell
 $ python manage.py migrate
 ```
-7. Start built-in Python Server and run cron (run cron with -p and a low number otherwise it will take a long time to scrap all the data)
+7. Start built-in Python Server and run cron (run cron with -p and a low number otherwise it will take a long time to scrap all the data this will result in fewer data points in the graphs but you won't have to have cron running for 24+ hours first before you can run the server)
 ```shell
 $ python manage.py runserver
 $ python cron.py
