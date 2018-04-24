@@ -54,6 +54,7 @@ $ pip install apscheduler
 $ pip install TwitterAPI
 $ pip install pytrends
 $ pip install praw
+$ pip install tweepy
 ```
 7. Build the tables using the command (in project directory where manage.py resides):
 ```shell
