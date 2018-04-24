@@ -19,11 +19,11 @@ cryptoDB=# CREATE USER ccadmin;
 cryptoDB=# GRANT ALL ON DATABASE "cryptoDB" TO ccadmin;
 cryptoDB=# \q
 ```
-5. Navigate to the CryptoSite directory and install PostgreSQL Python adapater
+5. Navigate to the CryptoSite directory and install PostgreSQL Python adapter
 ```shell
 $ pip install psycopg2
 ```
-5a. Install other libraries for the background tasks to run
+5a. Install other libraries for the background tasks to run (in main directory)
 ```shell
 $ pip install requests
 $ pip install apscheduler
@@ -31,11 +31,11 @@ $ pip install TwitterAPI
 $ pip install pytrends
 $ pip install praw
 ```
-6. Build the tables
+6. Build the tables using the command:
 ```shell
 $ python manage.py migrate
 ```
-7. Start built-in Python Server and run cron
+7. Start built-in Python Server and run cron (run cron with -p and a low number otherwise it will take a long time to scrap all the data)
 ```shell
 $ python manage.py runserver
 $ python cron.py
