@@ -212,15 +212,9 @@
 <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
 
 	{% for tweet in coinTweets %}
-<<<<<<< HEAD
-		{% if '{{tweet.retweeted_status}}' != 'False'%}
+
 			<p>{{ tweet.text }}</p>
-      {% endif %}
-=======
-		{% if {{tweet.retweeted}} != 'False' %}
-			<p>{{ tweet.text }}</p>
-		
->>>>>>> 2944c471ee3f5edb90f165bf0346d05e8e1c0790
+
     {% endfor %}
 
 </div>
