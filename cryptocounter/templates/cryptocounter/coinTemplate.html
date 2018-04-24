@@ -212,9 +212,9 @@
 <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
 	
 	{% for tweet in coinTweets %}
-		{% if tweet.retweeted = 'false'}
+		{% if {{tweet.retweeted}} != 'False' %}
 			<p>{{ tweet.text }}</p>
-		{% endif %}
+		
     {% endfor %}
 
 </div>
