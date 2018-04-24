@@ -4,12 +4,13 @@ CS 506 Project
 <p>Django version 2.0.x</p>
 
 Installation:
-1. Use link below to configure Python and Django on your machine.  Your choice to use the Python in the main environment or setup a virtual environment (VE recommended). All the commands with python and pip below have them set to default to python3 and pip3 if these are not the defaults on your machine you will need to use pip3 instead of pip or python3 instead of python in the terminal commands listed below.
+1. Use link below to configure Python and Django on your machine (versions above).  Your choice to use the Python in the main environment or setup a virtual environment (VE recommended).  
+NOTE: All the commands with python and pip below have them set to default to python3 and pip3 if these are not the defaults on your machine you will need to use pip3 instead of pip or python3 instead of python in the terminal commands listed below.
 <https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment>
 2. Clone the GitHub repo from <https://github.com/trlee2/CryptoCounter>
 3. Install PostgreSQL on your machine
-  a. On Windows: <https://www.postgresql.org/download/>
-  b. On Mac:
+  * On Windows: <https://www.postgresql.org/download/>
+  * On Mac:
   ```shell
   $ brew update
   $ brew doctor
