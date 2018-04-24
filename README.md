@@ -43,6 +43,7 @@ $ python cron.py
 8. Cron can also take arguments when ran
 ```shell
 $ python cron.py -h
+$ python cron.py -d (use this for debugging)
 ----------------------------------------------------------------------------
 long argument   short argument  definition
 ----------------------------------------------------------------------------
@@ -52,5 +53,6 @@ long argument   short argument  definition
 --test             -t             Start xUnit tests
 --history [days]   -p             Sets the number of days to go back in history
                                     Default: 184 days (6 months)
+--debug            -d             Debug mode of testing as we code                                    
 -----------------------------------------------------------------------------
 ```
