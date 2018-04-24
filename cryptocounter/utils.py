@@ -35,7 +35,7 @@ def getCurrPrices():
 def getIcoInfo():
     data = []
     # get all tracked ICOs
-    icoData = Ico.objects.all()
+    icoData = Ico.objects.all().order_by('enddate')
     currTime = datetime.now(timezone.utc)
     for ico in icoData:
         # determine if ICO is live
