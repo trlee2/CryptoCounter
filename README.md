@@ -15,7 +15,7 @@ $ createdb cryptoDB
 $ psql cryptoDB
 ```
 ```shell
-cryptoDB=# CREATE USER ccadmin;
+cryptoDB=# CREATE USER ccadmin WITH PASSWORD '1';
 cryptoDB=# GRANT ALL ON DATABASE "cryptoDB" TO ccadmin;
 cryptoDB=# \q
 ```
