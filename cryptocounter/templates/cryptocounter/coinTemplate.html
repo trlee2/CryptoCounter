@@ -213,7 +213,10 @@
 
 	{% for tweet in coinTweets %}
 
-	<div><p>{{ tweet.text }}</p></div><hr> 
+	<div>
+	<p>{{ tweet.screen_name }}</p>
+	<p>{{ tweet.text }}</p>
+	</div><hr> 
 
     {% endfor %}
 
