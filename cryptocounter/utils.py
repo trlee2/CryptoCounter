@@ -35,7 +35,7 @@ def getCurrPrices():
 def getIcoInfo():
     data = []
     # get all tracked ICOs
-    icoData = Ico.objects.all()
+    icoData = Ico.objects.all().order_by('enddate')
     currTime = datetime.now(timezone.utc)
     for ico in icoData:
         # determine if ICO is live
@@ -307,13 +307,22 @@ def getCoinTweets(coinName):
 	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
 	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
 	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
-
-	MAX_TWEETS = 10
-
-	auth = tweepy.OAuthHandler(CONSUMER_TOKEN, CONSUMER_SECRET)
+	MAX_TWEETS = 15
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth)
-	coinTweets = tweepy.Cursor(api.search, q='#'+coinName, rpp=100).items(MAX_TWEETS)
-	return render(request, 'coinTemplate.html', {'coinTweets': coinTweets})
-	#for tweet in tweepy.Cursor(api.search, q='#python', rpp=100).items(MAX_TWEETS):
-		# Do something
-		#pass
+	coinTweets = tweepy.Cursor(api.search, q='#'+coinName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
+	return  {'coinTweets': coinTweets}
+
+# return tweets for the coin
+def getICOTweets(icoName):
+	consumer_key = '6toOrdLOCWsNo9sg5qgsQm9uX'
+	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
+	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
+	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
+	MAX_TWEETS = 15
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	api = tweepy.API(auth)
+	icoTweets = tweepy.Cursor(api.search, q='#'+icoName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
+	return  {'icoTweets': icoTweets}

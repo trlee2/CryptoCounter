@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Crypto Counter</title>
-
+  <link rel="shortcut icon" href="../../static/favicon.ico" />
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
@@ -53,6 +53,7 @@
     </tr>
 
     {% for i in icos %}
+    {% if i.daysRemaining.days >= -5 %}
     <tr>
 	    <td class="marketTable"><a href="watchlist/addico/{{i.ico_id}}"><span class="glyphicon glyphicon-plus-sign"></span></a></td>
       {% if i.daysRemaining.days >= 0 %}
@@ -65,6 +66,7 @@
       <td><a href="icodetails/{{i.ico_name}}">{{i.ico_name}}</a></td>
       <td>{{i.description}}</td>
     </tr>
+    {% endif %}
     {% endfor %}
 
   </table>

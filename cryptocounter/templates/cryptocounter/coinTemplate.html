@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Crypto Counter</title>
-
+  <link rel="shortcut icon" href="../../static/favicon.ico" />
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
@@ -16,7 +16,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -210,9 +210,15 @@
 </div>
 
 <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
-	
-	{% for tweet in coin_tweets %}
-      <p>{{ tweet.text }}</p>
+
+	{% for tweet in coinTweets %}
+	<div>
+		<div> 
+			<a href="https://twitter.com/{{tweet.user.screen_name}}"><p style="color: #00aced; font-size: 20px; margin-bottom:0px;">@{{ tweet.user.screen_name }}</p></a>
+		</div>
+	<p>{{ tweet.text }}</p>
+	</div><hr> 
+
     {% endfor %}
 
 </div>
@@ -234,18 +240,28 @@
 var req = new Request(url);
 fetch(req)
     .then(function(response) {
-       return response.json(); 
+       return response.json();
     })
 	.then(function(myJson) {
 		var article;
 		var temp = document.getElementById("content");
 		var jsondata = JSON.parse(JSON.stringify(myJson));
+		var count = 0;
 		for (var i = 0; i < jsondata.articles.length; i++) {
 			article = jsondata.articles[i];
 			if(article.source.name != "Bleepingcomputer.com"){
-				if(article.description !=""){
-				temp.insertAdjacentHTML("beforeend", '<div><a href='+article.url+'>'+article.title+'</a></div>'
-													+'<div>'+article.description+'</div>');
+				if(article.source.name != "Deviantart.com"){
+					if(article.description !=""){
+						count +=1; 
+						if(count%2 == 0){
+							temp.insertAdjacentHTML("beforeend", '<div style="background-color: #dddddd;"><div style=" margin-left: 10%; padding-bottom:5px; padding-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+														+'<div style="margin-left: 10%; padding-bottom: 10px;">'+article.description+'</div></div>');
+						}
+						else{
+							temp.insertAdjacentHTML("beforeend", '<div class="article"><div style=" margin-left: 10%; padding-bottom:5px; padding-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+														+'<div style="margin-left: 10%; padding-bottom: 10px;">'+article.description+'</div></div>');
+						}
+					}
 				}
 			}
 		}
