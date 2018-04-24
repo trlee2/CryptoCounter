@@ -214,10 +214,9 @@
 	{% for tweet in coinTweets %}
 	<div>
 		<div> 
-			<p style="color: #00aced">{{ tweet.user.screen_name }}</p>
+			<p style="color: #00aced; font-size: 20px;">{{ tweet.user.screen_name }}</p>
 		</div>
 	<p>{{ tweet.text }}</p>
-	<p>{{ tweet.media.url }}</p>
 	</div><hr> 
 
     {% endfor %}
