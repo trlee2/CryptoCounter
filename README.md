@@ -7,8 +7,15 @@ Installation:
 1. Use link below to configure Python and Django on your machine.  Your choice to use the Python in the main environment or setup a virtual environment (VE recommended). All the commands with python and pip below have them set to default to python3 and pip3 if these are not the defaults on your machine you will need to use pip3 instead of pip or python3 instead of python in the terminal commands listed below.
 <https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment>
 2. Clone the GitHub repo from <https://github.com/trlee2/CryptoCounter>
-3. Install PostgreSQL on your machine
-<https://www.postgresql.org/download/>
+3.
+a. On Windows: Install PostgreSQL on your machine <https://www.postgresql.org/download/>
+b. On Mac:
+```shell
+$ brew update
+$ brew doctor
+$ brew install postgresql
+$ brew services start postgres
+```
 4. Setup local instance of database and create user. We used ccadmin as the database owner and we set the password for ccadmin to '1', this needs to be done within PostgreSQL. This reflects the setup in the settings.py file. If this isn't set up properly the django app will not be able to run at all. (It is very important to have the user set up and have all permissions granted to that user in the database. Also having the user password in postgresql match the password in the settings.py file is necessary to get the django app to run). When you create a database in PostgreSQL it is not located in the current directory, and will need to be modified within the postgre terminal to get it configured properly. Setting up the database gave us a lot of issues early on so make sure the directions are followed carefully.
 ```shell
 $ createdb cryptoDB
@@ -56,3 +63,5 @@ long argument   short argument  definition
 --debug            -d             Debug mode of testing as we code                                    
 -----------------------------------------------------------------------------
 ```
+9. Bugs can be found in GitHub's issue tracker at <https://github.com/trlee2/CryptoCounter/issues>
+10. Live site can be found at <https://cccounter.herokuapp.com>
