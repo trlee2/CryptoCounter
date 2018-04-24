@@ -238,3 +238,7 @@ value {
 	margin-left: 10px;
 	margin-right: 10px;
 }
+
+.article:nth-child(even) {
+    background-color: #dddddd;
+}
