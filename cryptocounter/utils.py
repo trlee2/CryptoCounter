@@ -307,11 +307,11 @@ def getCoinTweets(coinName):
 	consumer_secret = 'MHFMWgq73xgCPISejy0Xnp6mXdz65hbRnMTzmb8Ur7kIhVCpRl'
 	access_token = '983406965626998784-enX8B14U6aEgDsXFRvhpzpNTJ98YCFE'
 	access_token_secret = 'INOYCQC3FmWsO3qMPkygVIMKhFywDKudFlviqHxBNfrpj'
-	MAX_TWEETS = 100
+	MAX_TWEETS = 15
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth)
-	coinTweets = tweepy.Cursor(api.search, q='#'+coinName, rpp=100).items(MAX_TWEETS)
+	coinTweets = tweepy.Cursor(api.search, q='#'+coinName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
 	return  {'coinTweets': coinTweets}
 	#for tweet in tweepy.Cursor(api.search, q='#python', rpp=100).items(MAX_TWEETS):
 		# Do something
