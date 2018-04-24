@@ -324,5 +324,5 @@ def getICOTweets(icoName):
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_token, access_token_secret)
 	api = tweepy.API(auth)
-	coinTweets = tweepy.Cursor(api.search, q='#'+icoName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
+	icoTweets = tweepy.Cursor(api.search, q='#'+icoName +' -filter:retweets', rpp=100).items(MAX_TWEETS)
 	return  {'icoTweets': icoTweets}
