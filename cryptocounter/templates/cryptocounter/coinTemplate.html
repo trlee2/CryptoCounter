@@ -214,7 +214,7 @@
 	{% for tweet in coinTweets %}
 	<div>
 		<div> 
-			<p style="color: #00aced; font-size: 20px; margin-bottom:0px;">@{{ tweet.user.screen_name }}</p>
+			<a href="https://twitter.com/{{tweet.user.screen_name}}"><p style="color: #00aced; font-size: 20px; margin-bottom:0px;">@{{ tweet.user.screen_name }}</p></a>
 		</div>
 	<p>{{ tweet.text }}</p>
 	</div><hr> 
