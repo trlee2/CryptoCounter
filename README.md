@@ -16,6 +16,10 @@ Installation:
   $ brew install postgresql
   $ brew services start postgres
   ```
+  c. On Linux
+  ```shell
+  $ sudo apt-get install postgresql
+  ```
 4. Setup local instance of database and create user. We used ccadmin as the database owner and we set the password for ccadmin to '1', this needs to be done within PostgreSQL. This reflects the setup in the settings.py file. If this isn't set up properly the django app will not be able to run at all. (It is very important to have the user set up and have all permissions granted to that user in the database. Also having the user password in postgresql match the password in the settings.py file is necessary to get the django app to run). When you create a database in PostgreSQL it is not located in the current directory, and will need to be modified within the postgre terminal to get it configured properly. Setting up the database gave us a lot of issues early on so make sure the directions are followed carefully.
 ```shell
 $ createdb cryptoDB
