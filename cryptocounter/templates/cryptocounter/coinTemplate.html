@@ -251,11 +251,11 @@ fetch(req)
 						count +=1; 
 						if(count%2 == 0){
 							temp.insertAdjacentHTML("beforeend", '<div style="background-color: #dddddd;"><div style="margin-bottom:5px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
-														+'<div>'+article.description+'</div></div><hr>');
+														+'<div>'+article.description+'</div></div>');
 						}
 						else{
 							temp.insertAdjacentHTML("beforeend", '<div class="article"><div style="margin-bottom:5px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
-														+'<div>'+article.description+'</div></div><hr>');
+														+'<div>'+article.description+'</div></div>');
 						}
 					}
 				}
