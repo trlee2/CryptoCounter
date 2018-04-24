@@ -250,11 +250,11 @@ fetch(req)
 					if(article.description !=""){
 						count +=1; 
 						if(count%2 == 0){
-							temp.insertAdjacentHTML("beforeend", '<div style="background-color: #dddddd;"><div style="margin-left: 10%; margin-bottom:10px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+							temp.insertAdjacentHTML("beforeend", '<div style="background-color: #dddddd;"><div style=" margin-left: 10%; margin-bottom:5px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
 														+'<div style="margin-left: 10%; margin-bottom: 10px;">'+article.description+'</div></div>');
 						}
 						else{
-							temp.insertAdjacentHTML("beforeend", '<div class="article"><div style=" margin-left: 10%;margin-bottom:5px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+							temp.insertAdjacentHTML("beforeend", '<div class="article"><div style=" margin-left: 10%; margin-bottom:5px; margin-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
 														+'<div style="margin-left: 10%; margin-bottom: 10px;">'+article.description+'</div></div>');
 						}
 					}
