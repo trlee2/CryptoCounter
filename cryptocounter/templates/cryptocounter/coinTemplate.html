@@ -16,7 +16,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -210,11 +210,11 @@
 </div>
 
 <div id="Twitter" class="list" style="width: 50%; margin: 0 auto;">
-	
+
 	{% for tweet in coinTweets %}
-		{% if tweet.retweeted = 'false'}
+		{% if '{{tweet.retweeted_status}}' != 'False'%}
 			<p>{{ tweet.text }}</p>
-		{% endif %}
+      {% endif %}
     {% endfor %}
 
 </div>
@@ -236,7 +236,7 @@
 var req = new Request(url);
 fetch(req)
     .then(function(response) {
-       return response.json(); 
+       return response.json();
     })
 	.then(function(myJson) {
 		var article;
