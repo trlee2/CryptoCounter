@@ -311,13 +311,21 @@
 				var article;
 				var temp = document.getElementById("content");
 				var jsondata = JSON.parse(JSON.stringify(myJson));
+				var count = 0;
 				for (var i = 0; i < jsondata.articles.length; i++) {
 					article = jsondata.articles[i];
 					if(article.source.name != "Bleepingcomputer.com"){
 						if(article.source.name != "Deviantart.com"){
 							if(article.description !=""){
-							temp.insertAdjacentHTML("beforeend", '<div class="article"><div><a href='+article.url+'>'+article.title+'</a></div>'
-																+'<div>'+article.description+'</div></div><hr>');
+								count +=1; 
+								if(count%2 == 0){
+									temp.insertAdjacentHTML("beforeend", '<div style="background-color: #dddddd;"><div style=" margin-left: 10%; padding-bottom:5px; padding-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+														+'<div style="margin-left: 10%; padding-bottom: 10px;">'+article.description+'</div></div>');
+								}
+								else{
+									temp.insertAdjacentHTML("beforeend", '<div class="article"><div style=" margin-left: 10%; padding-bottom:5px; padding-top: 5px; text-align: left; font-size:18px;"><a href='+article.url+'>'+article.title+'</a></div>'
+														+'<div style="margin-left: 10%; padding-bottom: 10px;">'+article.description+'</div></div>');
+								}
 							}
 						}
 					}
