@@ -9,7 +9,7 @@ Installation:
 2. Clone the GitHub repo from <https://github.com/trlee2/CryptoCounter>
 3. Install PostgreSQL on your machine
 <https://www.postgresql.org/download/>
-4. Setup local instance of database and create user
+4. Setup local instance of database and create user. We used ccadmin as the database owner and we set the password for ccadmin to '1'. This reflects the setup in the settings.py file. If this isn't set up properly the django app will not be able to run at all.
 ```shell
 $ createdb cryptoDB
 $ psql cryptoDB
