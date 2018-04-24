@@ -826,7 +826,7 @@ def updateGoogleInfo():
 	conn = getConnected()
 	cur = conn.cursor()
 	cc = "cryptocounter_"
-	
+
 	## general ##
 	cur.execute("SELECT id, date FROM "+cc+"overallsocial")
 	gen = cur.fetchall()
@@ -837,28 +837,73 @@ def updateGoogleInfo():
 				gid = gen[j][0]
 				gtrend = genGoogle[i]["trend"]
 				cur.execute("UPDATE "+cc+"overallsocial SET  num_trends={} WHERE id={}".format(gtrend,gid))
-	
+				
 	## coin ##
 	cur.execute("SELECT "+cc+"socialcoin.id, "+cc+"Coin.coin_name, "+cc+"socialcoin.date FROM "+cc+"socialcoin INNER JOIN "+cc+"Coin ON "+cc+"socialcoin.coin_id_id ="+cc+"Coin.coin_id")
 	genCoin = cur.fetchall()
 	
-	for p in range(0, len(genCoin)): #for each coin
-		genGoogle = getGoogleTrends(genCoin[p][1]) #get gt
+	cur.execute("SELECT coin_id, coin_name FROM "+cc+"Coin")
+	coinNames = cur.fetchall()
+	
+	for p in range(0, len(coinNames)): #for each coin
+		genGoogle = getGoogleTrends(coinNames[p][1]) #get gt
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
 			for j in range(0, len(genCoin)): #find date in DB
-				if(str(genCoin[j][2])[:-6] == genGoogle[i]["date"]):
+				if(str(genCoin[j][2])[:-6] == genGoogle[i]["date"] and genCoin[j][1] == coinNames[p][1]):
 					gid = genCoin[j][0]
 					gtrend = genGoogle[i]["trend"]
 					cur.execute("UPDATE "+cc+"socialcoin SET  num_trends={} WHERE id={}".format(gtrend,gid))
 	
-	'''
 	## ICO ##
 	cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id")
 	genICO = cur.fetchall()
-	for p in range(0, len(genICO)): #for each coin
-		genGoogle = getGoogleTrends(genICO[p][1]) #get gt
+	
+	cur.execute("SELECT ico_id, ico_name FROM "+cc+"ico ORDER BY ico_name ASC")
+	icoNames = cur.fetchall()
+	
+	for p in range(0, len(icoNames)): #for each coin
+		genGoogle = getGoogleTrends(icoNames[p][1]) #get gt
+		if(genGoogle == -1):
+			continue
+		for i in range(0, len(genGoogle)): #for each date in gt
+			for j in range(0, len(genICO)): #find date in DB
+				if(str(genICO[j][2])[:-6] == genGoogle[i]["date"] and genICO[j][1] == icoNames[p][1]):
+					gid = genICO[j][0]
+					gtrend = genGoogle[i]["trend"]
+					cur.execute("UPDATE "+cc+"socialico SET  num_trends={} WHERE id={}".format(gtrend,gid))
+	
+	conn.commit()
+	conn.close()
+
+def updateTwitterInfo():
+	#get google for general and ICO
+	'''
+	conn = getConnected()
+	cur = conn.cursor()
+	cc = "cryptocounter_"
+
+	## general ##
+	cur.execute("SELECT id, date FROM "+cc+"overallsocial")
+	gen = cur.fetchall()
+	genGoogle = getGoogleTrends("cryptocurrency")
+	for i in range(0, len(genGoogle)):
+		for j in range(0, len(gen)):
+			if(str(gen[j][1])[:-6] == genGoogle[i]["date"]):
+				gid = gen[j][0]
+				gtrend = genGoogle[i]["trend"]
+				cur.execute("UPDATE "+cc+"overallsocial SET  num_trends={} WHERE id={}".format(gtrend,gid))
+				
+	## ICO ##
+	cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id")
+	genICO = cur.fetchall()
+	
+	cur.execute("SELECT ico_id, ico_name FROM "+cc+"ico")
+	icoNames = cur.fetchall()
+	
+	for p in range(0, len(icoNames)): #for each coin
+		genGoogle = getGoogleTrends(icoNames[p][1]) #get gt
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
@@ -867,12 +912,10 @@ def updateGoogleInfo():
 					gid = genICO[j][0]
 					gtrend = genGoogle[i]["trend"]
 					cur.execute("UPDATE "+cc+"socialico SET  num_trends={} WHERE id={}".format(gtrend,gid))
-	'''				
+			
 	conn.commit()
 	conn.close()
-
-def updateTwitterInfo():
-	#get google for general and ICO
+	'''
 	pass
 	
 ### TESTING CODE BELOW ###
@@ -1173,11 +1216,11 @@ for currentArgument, currentValue in arguments:
 		print("Currently in debug mode:")
 		### Add testing code below ###
 		#truncateDB(True)
-		#setTrackedCoins()
+		setTrackedCoins()
 		#updateICO()
 		#updateSocialICO()
-		tmp = getGoogleTrends("WeevoCity")
-		print(tmp)
+		updateGoogleInfo()
+		#print(tmp)
 		#updateTwitterInfo()
 		### End of testing code ###
 		sys.exit(0)
