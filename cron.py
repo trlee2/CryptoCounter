@@ -318,11 +318,13 @@ Retive Facebook likes for given name
 '''	
 def getFacebook(name):
 	num = -1
-	at="EAACEdEose0cBAORxeZAHLG9ASHffhYmrcauso0pwPeD7baoAGflymDvDYDhXDe8CeWU1umVfAZB6kiHfg9kvnY6nCqmRuiUbTUOMxZC6NYIVTsoirJqS6h8wz48Ua24b6NiL7gh98FP0s2IDjZABqqHZAZBaA1HZBpKfTgyV5NMm1HUiHME6kP2MBfrdm3HTSEZD"
+	#https://graph.facebook.com/oauth/access_token?client_id=428464434260566&client_secret=9264562884e62d1319b25bf125f6865d&grant_type=client_credentials
+	at="EAACEdEose0cBADWgrZBKgZAa0bhx6Vqo9FgAozWHZCwd3DLIUubnl0vwAYyww35QedcZA6FvSynC58XViAEVit9tWZBcXx8imRdJ0rNI6YpHUezAtYhfCmvb1h1QGAUcVsciCheUgxSgvBLtirI3SGqfFL1d4e0pYl8992wm8ZBRAxbCf6RyEXgwe7ICZCQvIAZD"
 	res = getAPI("https://graph.facebook.com/"+name+"/?fields=fan_count&access_token="+at)
 	if("fan_count" in res.keys()):
 		num = res["fan_count"]
 	return num
+	
 
 '''
 Loops through keys and retrives a good link for the news
@@ -370,7 +372,7 @@ def parseGeneralTwitter():
 	#pTweet = parseGeneralTwitter(terms)
 	num = 0;
 	for i in range(0,len(terms)):
-		num += 1#getTwitter(terms[i])
+		num += getTwitter(terms[i])
 	return num
 def parseGeneralReddit():
 	return getRedditSub(["cryptocurrency"])[0]["sub"]
@@ -547,7 +549,7 @@ def parseICOTwitter(terms):
 	for t in terms:
 		list = {}
 		list["name"] = t
-		list["tweets"] = 1 #getTwitter(t)
+		list["tweets"] = getTwitter(t)
 		icoList.append(list)
 	return icoList
 def parseICOReddit(terms):
@@ -692,7 +694,6 @@ def updateOverallSocial():
 	if(now != dl):
 		terms = ["crypto","cryptocurrency","cryptocurrencies", "blockchain"]
 		pNews = parseGeneralNews(terms)
-		#pTweet = parseGeneralTwitter()
 		pReddit = parseGeneralReddit()
 		pFB = parseGeneralFacebook()
 		
@@ -774,7 +775,6 @@ def updateSocialICO():
 	
 	if(now != dl):
 		pNews = parseICONews(icoInfo)
-		#pTweet = parseICOTwitter(icoList)
 		pReddit = parseICOReddit(icoList)
 		pFB = parseICOFacebook(icoList)
 
@@ -782,7 +782,6 @@ def updateSocialICO():
 		for i in range(0,len(pNews)):
 			icoID = pNews[i]["id"]
 			icoNews = pNews[i]["results"]
-			#icoTweet = pTweet[i]["tweets"]
 			icoSub = pReddit[i]["sub"]
 			icoLikes = pFB[i]["likes"]
 
@@ -823,6 +822,7 @@ def updateTicker():
 	
 def updateGoogleInfo():
 	#get google for general, coin, and ICO
+	#TODO: If works on after school, add limits to SELECT
 	conn = getConnected()
 	cur = conn.cursor()
 	cc = "cryptocounter_"
@@ -839,8 +839,6 @@ def updateGoogleInfo():
 				cur.execute("UPDATE "+cc+"overallsocial SET  num_trends={} WHERE id={}".format(gtrend,gid))
 				
 	## coin ##
-	cur.execute("SELECT "+cc+"socialcoin.id, "+cc+"Coin.coin_name, "+cc+"socialcoin.date FROM "+cc+"socialcoin INNER JOIN "+cc+"Coin ON "+cc+"socialcoin.coin_id_id ="+cc+"Coin.coin_id")
-	genCoin = cur.fetchall()
 	
 	cur.execute("SELECT coin_id, coin_name FROM "+cc+"Coin")
 	coinNames = cur.fetchall()
@@ -850,6 +848,8 @@ def updateGoogleInfo():
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
+			cur.execute("SELECT "+cc+"socialcoin.id, "+cc+"Coin.coin_name, "+cc+"socialcoin.date FROM "+cc+"socialcoin INNER JOIN "+cc+"Coin ON "+cc+"socialcoin.coin_id_id ="+cc+"Coin.coin_id WHERE "+cc+"Coin.coin_name ='"+coinNames[p][1]+"'")
+			genCoin = cur.fetchall()
 			for j in range(0, len(genCoin)): #find date in DB
 				if(str(genCoin[j][2])[:-6] == genGoogle[i]["date"] and genCoin[j][1] == coinNames[p][1]):
 					gid = genCoin[j][0]
@@ -857,9 +857,6 @@ def updateGoogleInfo():
 					cur.execute("UPDATE "+cc+"socialcoin SET  num_trends={} WHERE id={}".format(gtrend,gid))
 	
 	## ICO ##
-	cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id")
-	genICO = cur.fetchall()
-	
 	cur.execute("SELECT ico_id, ico_name FROM "+cc+"ico ORDER BY ico_name ASC")
 	icoNames = cur.fetchall()
 	
@@ -868,6 +865,8 @@ def updateGoogleInfo():
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
+			cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id WHERE "+cc+"ico.ico_name ='"+icoNames[p][1]+"'")
+			genICO = cur.fetchall()
 			for j in range(0, len(genICO)): #find date in DB
 				if(str(genICO[j][2])[:-6] == genGoogle[i]["date"] and genICO[j][1] == icoNames[p][1]):
 					gid = genICO[j][0]
@@ -879,22 +878,32 @@ def updateGoogleInfo():
 
 def updateTwitterInfo():
 	#get google for general and ICO
-	'''
+	#TODO: If works on after school, add limits (to ICO) to SELECT
+	print("NOTE: This will take over 5+ hours, you may use the site while cron is working")
 	conn = getConnected()
 	cur = conn.cursor()
 	cc = "cryptocounter_"
+	
+	day = 86400
+	d = time.time()
+	now = int(d-(d%day))
 
 	## general ##
-	cur.execute("SELECT id, date FROM "+cc+"overallsocial")
+	cur.execute("SELECT  id, date, num_tweets FROM "+cc+"overallsocial ORDER BY date ASC LIMIT 1")
 	gen = cur.fetchall()
-	genGoogle = getGoogleTrends("cryptocurrency")
-	for i in range(0, len(genGoogle)):
-		for j in range(0, len(gen)):
-			if(str(gen[j][1])[:-6] == genGoogle[i]["date"]):
-				gid = gen[j][0]
-				gtrend = genGoogle[i]["trend"]
-				cur.execute("UPDATE "+cc+"overallsocial SET  num_trends={} WHERE id={}".format(gtrend,gid))
-				
+	dt = int(time.mktime(gen[0][1].timetuple()))
+	ld = int(dt-(dt%day))
+	
+	if(ld == now):
+		if(gen[0][2] == -1):
+			numGenTweets = parseGeneralTwitter()
+			cur.execute("UPDATE "+cc+"overallsocial SET  num_tweets={} WHERE id={}".format(numGenTweets,gen[0][0]))
+		else:
+			print("SKIPPING GENERAL TWEET: already recorded")
+	else:	
+		print("SKIPPING GENERAL TWEET: date mismatch")
+
+	'''			
 	## ICO ##
 	cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id")
 	genICO = cur.fetchall()
@@ -912,11 +921,10 @@ def updateTwitterInfo():
 					gid = genICO[j][0]
 					gtrend = genGoogle[i]["trend"]
 					cur.execute("UPDATE "+cc+"socialico SET  num_trends={} WHERE id={}".format(gtrend,gid))
-			
+	'''		
 	conn.commit()
 	conn.close()
-	'''
-	pass
+
 	
 ### TESTING CODE BELOW ###
 #truncate all coin and social DB for a clean start
@@ -959,13 +967,18 @@ def main(test=False): #setup for initial run
 		updateOverallSocial()		
 		print("[Cron is updating social ICO data]")
 		updateSocialICO()
-		print("[Cron is adding google trends to data]")
-		updateGoogleInfo()
-		print("[Cron is adding number of tweets to data]")
-		updateTwitterInfo()
+		print("\n\n[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]")
+		print("[YOU CAN NOW VIEW THE UPDATED INFO IN THE SITE]")
+		print("[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]\n\n")
 		#b = time.time()
 		#c = int(b-a)
 		#print("\nThis took " + str(round(c/60,2)) + " minutes")
+		print("[Cron is adding google trends to data]")
+		updateGoogleInfo()
+		#d = int(time.time() - a)
+		#print("\nThis took " + str(round(d/60,2)) + " minutes")
+		print("[Cron is adding number of tweets to data]")
+		#updateTwitterInfo()
 		if("c" in mode):
 			print("[Cron is starting cronjobs]")
 			sched.start() #start cron
@@ -979,7 +992,7 @@ def main(test=False): #setup for initial run
 		updateOverallSocial()		
 		updateSocialICO()
 		updateGoogleInfo()
-		updateTwitterInfo()
+		#updateTwitterInfo()
 
 
 
@@ -1219,9 +1232,9 @@ for currentArgument, currentValue in arguments:
 		setTrackedCoins()
 		#updateICO()
 		#updateSocialICO()
-		updateGoogleInfo()
-		#print(tmp)
 		#updateTwitterInfo()
+		print(getFacebook("cryptocurrency"))
+		#print(tmp)
 		### End of testing code ###
 		sys.exit(0)
 
