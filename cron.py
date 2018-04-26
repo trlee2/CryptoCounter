@@ -293,8 +293,12 @@ Retive google trends info for given name
 '''		
 def getGoogleTrends(name):
 	print("-> Working on getting Google info: "+name)
-	pytrends.build_payload([name], cat=0, timeframe='today 1-m', geo='', gprop='')
-	resRaw = json.loads(pytrends.interest_over_time().to_json())
+	resRaw = {}
+	try:
+		pytrends.build_payload([name], cat=0, timeframe='today 1-m', geo='', gprop='')
+		resRaw = json.loads(pytrends.interest_over_time().to_json())
+	except Exception as e:
+		print("ALERT: Google response came back invalid, try again later")
 	if(len(resRaw) < 1):
 		return -1
 	res = resRaw[name]
@@ -681,7 +685,7 @@ def updateOverallSocial():
 	conn = getConnected()
 	cur = conn.cursor()
 
-	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_overallsocial GROUP BY date ORDER BY date ASC LIMIT 1")
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_overallsocial GROUP BY date ORDER BY date DESC LIMIT 1")
 
 	DBsocial = cur.fetchall()
 	dl = 0
@@ -714,7 +718,7 @@ def updateSocialCoin():
 	conn = getConnected()
 	cur = conn.cursor()
 
-	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialcoin GROUP BY date ORDER BY date ASC LIMIT 1")
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialcoin GROUP BY date ORDER BY date DESC LIMIT 1")
 
 	DBsocial = cur.fetchall()
 	dl = 0
@@ -763,7 +767,7 @@ def updateSocialICO():
 	for z in range(0, len(icoInfo)):
 		icoList.append(icoInfo[z][1])
 	
-	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialico GROUP BY date ORDER BY date ASC LIMIT 1")
+	cur.execute("SELECT MIN(id) as id, date FROM cryptocounter_socialico GROUP BY date ORDER BY date DESC LIMIT 1")
 
 	DBsocial = cur.fetchall()
 	dl = 0
@@ -831,6 +835,8 @@ def updateGoogleInfo():
 	cur.execute("SELECT id, date FROM "+cc+"overallsocial")
 	gen = cur.fetchall()
 	genGoogle = getGoogleTrends("cryptocurrency")
+	if(genGoogle < 0):
+		return
 	for i in range(0, len(genGoogle)):
 		for j in range(0, len(gen)):
 			if(str(gen[j][1])[:-6] == genGoogle[i]["date"]):
@@ -845,6 +851,8 @@ def updateGoogleInfo():
 	
 	for p in range(0, len(coinNames)): #for each coin
 		genGoogle = getGoogleTrends(coinNames[p][1]) #get gt
+		if(genGoogle < 0):
+			return
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
@@ -862,6 +870,8 @@ def updateGoogleInfo():
 	
 	for p in range(0, len(icoNames)): #for each coin
 		genGoogle = getGoogleTrends(icoNames[p][1]) #get gt
+		if(genGoogle < 0):
+			return
 		if(genGoogle == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
@@ -889,11 +899,10 @@ def updateTwitterInfo():
 	now = int(d-(d%day))
 
 	## general ##
-	cur.execute("SELECT  id, date, num_tweets FROM "+cc+"overallsocial ORDER BY date ASC LIMIT 1")
+	cur.execute("SELECT  id, date, num_tweets FROM "+cc+"overallsocial ORDER BY date DESC LIMIT 1")
 	gen = cur.fetchall()
 	dt = int(time.mktime(gen[0][1].timetuple()))
 	ld = int(dt-(dt%day))
-	
 	if(ld == now):
 		if(gen[0][2] == -1):
 			numGenTweets = parseGeneralTwitter()
@@ -1232,8 +1241,8 @@ for currentArgument, currentValue in arguments:
 		setTrackedCoins()
 		#updateICO()
 		#updateSocialICO()
-		#updateTwitterInfo()
-		print(getFacebook("cryptocurrency"))
+		updateTwitterInfo()
+		#print(getFacebook("cryptocurrency"))
 		#print(tmp)
 		### End of testing code ###
 		sys.exit(0)
