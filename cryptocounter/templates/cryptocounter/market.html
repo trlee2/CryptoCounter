@@ -6,8 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Crypto Counter</title>
+<<<<<<< HEAD
   {% load staticfiles %}
   <link rel="shortcut icon" href={% static 'favicon.ico' %}>
+=======
+  <link rel="shortcut icon" href="../../static/favicon.ico" />
+>>>>>>> master
 
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -245,10 +249,10 @@
         <th></th>
         <th>Coin</th>
         <th>Ticker</th>
-        <th>Price</th>
-        <th>Circulating Supply</th>
-        <th>Percent Change</th>
-        <th>Market Cap</th>
+        <th style="text-align:right;">Price</th>
+        <th style="text-align:right;">Circulating Supply</th>
+        <th style="text-align:right;">Percent Change</th>
+        <th style="text-align:right;">Market Cap</th>
 
       </tr>
 
@@ -258,14 +262,14 @@
         <td><a href="coindetails/{{i.coin_name}}">{{i.coin_name}}</a></td>
         {% load humanize %}
         <td>{{i.ticker}}</td>
-        <td>${{i.price|intcomma}}</td>
-        <td>{{i.circ_supply|intcomma}}</td>
+        <td style="text-align:right;">${{i.price|intcomma}}</td>
+        <td style="text-align:right;">{{i.circ_supply|intcomma}}</td>
         {% if i.percent_change >= 0 %}
-		    <td style="color:green;">{{i.percent_change}}%</td>
+		    <td style="color:green; text-align:right;">{{i.percent_change}}%</td>
 		    {% else %}
-		    <td style="color:red;">{{i.percent_change}}%</td>
+		    <td style="color:red; text-align:right;">{{i.percent_change}}%</td>
 		    {% endif %}
-        <td>${{i.market_cap|intcomma}}</td>
+        <td style="text-align:right;">${{i.market_cap|intcomma}}</td>
 
       </tr>
       {% endfor %}

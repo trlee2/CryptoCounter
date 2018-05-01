@@ -300,7 +300,7 @@ def getGoogleTrends(name):
 	except Exception as e:
 		print("ALERT: Google response came back invalid, try again later")
 	if(len(resRaw) < 1):
-		return -1
+		return [-1]
 	res = resRaw[name]
 	
 	
@@ -322,9 +322,10 @@ Retive Facebook likes for given name
 '''	
 def getFacebook(name):
 	num = -1
-	#https://graph.facebook.com/oauth/access_token?client_id=428464434260566&client_secret=9264562884e62d1319b25bf125f6865d&grant_type=client_credentials
-	at="EAACEdEose0cBADWgrZBKgZAa0bhx6Vqo9FgAozWHZCwd3DLIUubnl0vwAYyww35QedcZA6FvSynC58XViAEVit9tWZBcXx8imRdJ0rNI6YpHUezAtYhfCmvb1h1QGAUcVsciCheUgxSgvBLtirI3SGqfFL1d4e0pYl8992wm8ZBRAxbCf6RyEXgwe7ICZCQvIAZD"
+	#https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=428464434260566&client_secret=9264562884e62d1319b25bf125f6865d&fb_exchange_token=
+	at="EAACEdEose0cBAOiK6VEShZAuTPGZCZBLDFrpm2ulWBPCZBtRnFPHGjMx7PD8YrBOndrn6qglIudy5DpwiVnFIqbG6hU1VWKSJMP2RRCt6hZAwDn8oO5TTn0GXkJcuIthKpJtXRbwWGU2qp4E61e83Wsis8OUpd3sahh0clXrYA6S0TiU03hIMSXojX6JO880ZD"
 	res = getAPI("https://graph.facebook.com/"+name+"/?fields=fan_count&access_token="+at)
+	#print(res)
 	if("fan_count" in res.keys()):
 		num = res["fan_count"]
 	return num
@@ -835,7 +836,7 @@ def updateGoogleInfo():
 	cur.execute("SELECT id, date FROM "+cc+"overallsocial")
 	gen = cur.fetchall()
 	genGoogle = getGoogleTrends("cryptocurrency")
-	if(genGoogle < 0):
+	if(len(genGoogle) < 0):
 		return
 	for i in range(0, len(genGoogle)):
 		for j in range(0, len(gen)):
@@ -851,9 +852,9 @@ def updateGoogleInfo():
 	
 	for p in range(0, len(coinNames)): #for each coin
 		genGoogle = getGoogleTrends(coinNames[p][1]) #get gt
-		if(genGoogle < 0):
+		if(len(genGoogle) < 0):
 			return
-		if(genGoogle == -1):
+		if(genGoogle[0] == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
 			cur.execute("SELECT "+cc+"socialcoin.id, "+cc+"Coin.coin_name, "+cc+"socialcoin.date FROM "+cc+"socialcoin INNER JOIN "+cc+"Coin ON "+cc+"socialcoin.coin_id_id ="+cc+"Coin.coin_id WHERE "+cc+"Coin.coin_name ='"+coinNames[p][1]+"'")
@@ -870,9 +871,9 @@ def updateGoogleInfo():
 	
 	for p in range(0, len(icoNames)): #for each coin
 		genGoogle = getGoogleTrends(icoNames[p][1]) #get gt
-		if(genGoogle < 0):
+		if(len(genGoogle) < 0):
 			return
-		if(genGoogle == -1):
+		if(genGoogle[0] == -1):
 			continue
 		for i in range(0, len(genGoogle)): #for each date in gt
 			cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id WHERE "+cc+"ico.ico_name ='"+icoNames[p][1]+"'")
@@ -1241,8 +1242,8 @@ for currentArgument, currentValue in arguments:
 		setTrackedCoins()
 		#updateICO()
 		#updateSocialICO()
-		updateTwitterInfo()
-		#print(getFacebook("cryptocurrency"))
+		#updateTwitterInfo()
+		print(getFacebook("cryptocurrency"))
 		#print(tmp)
 		### End of testing code ###
 		sys.exit(0)
