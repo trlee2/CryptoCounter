@@ -94,7 +94,8 @@ def deleteWatchlistIco(request, iid):
 def coinDetails(request, cname):
     coinData = getCoinDetails(cname)
     coinTweets = getCoinTweets(cname)
-    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory'], 'coinSocial':coinData['coinSocial'], 'coinTweets':coinTweets['coinTweets']})
+    coinSocial = convertToPC(coinData['coinSocial'])
+    return render(request, 'cryptocounter/coinTemplate.html', {'coin':coinData['coinData'], 'coinHistory':coinData['coinHistory'], 'coinSocial':coinSocial, 'coinTweets':coinTweets['coinTweets']})
 
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)
