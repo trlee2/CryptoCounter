@@ -1,5 +1,5 @@
 # functions to retrieve data to provide to templates
-from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin
+from .models import Coin, Price, Ico, WatchItem, WatchIco, GeneralMarket, SocialCoin, SocialIco, OverallSocial
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import tweepy
@@ -47,6 +47,38 @@ def getIcoInfo():
         except:
             print('No ICO data found')
     return data
+
+# return social media trends for overall graph on market and trends pages
+def getOverallSocialMonth():
+    social = []
+
+    # get data from past month
+    time = datetime.now() - timedelta(days=31)
+
+    # get overall social trends for each day of past month
+    try:
+        overall = OverallSocial.objects.filter(date__gte=time).order_by('-date')
+
+        # create data points
+        for o in overall:
+            temp = {}
+            pyDate = o.date
+            year = pyDate.year
+            day = pyDate.day
+            month = pyDate.month - 1
+            temp['year'] = year
+            temp['month'] = month
+            temp['day'] = day
+            temp['num_tweets'] = o.num_tweets
+            temp['num_subs'] = o.num_subs
+            temp['num_likes'] = o.num_likes
+            temp['num_articles'] = o.num_articles
+            temp['num_trends'] = o.num_trends
+            social.append(temp)
+    except:
+        print('No overall social data found')
+
+    return social
 
 # return all data on an individual coin
 def getCoinDetails(cname):
@@ -99,6 +131,7 @@ def getCoinDetails(cname):
             temp['num_subs'] = c.num_subs
             temp['num_likes'] = c.num_likes
             temp['num_articles'] = c.num_articles
+            temp['num_trends'] = c.num_trends
             coinSocialHistory.append(temp)
     except:
         print('No social data for coin found')
@@ -128,12 +161,62 @@ def getIcoDetails(iname):
     except:
         print('No ICO data found')
 
-    # TODO: get ICO's social trends
-
     # send back the relevant info
     icoData = temp
 
-    return icoData
+    # get data from past month
+    time = datetime.now() - timedelta(days=31)
+
+    # get ICO's social trends
+    icoSocialHistory = []
+    try:
+        social = SocialIco.objects.filter(ico_id=ico.ico_id, date__gte=time).order_by('-date')
+
+        # create data points
+        for c in social:
+            temp = {}
+            pyDate = c.date
+            year = pyDate.year
+            day = pyDate.day
+            month = pyDate.month - 1
+            temp['year'] = year
+            temp['month'] = month
+            temp['day'] = day
+            temp['num_tweets'] = c.num_tweets
+            temp['num_subs'] = c.num_subs
+            temp['num_likes'] = c.num_likes
+            temp['num_articles'] = c.num_articles
+            temp['num_trends'] = c.num_trends
+            icoSocialHistory.append(temp)
+    except:
+        print('No social data for ICO found')
+
+    return {'icoData':icoData, 'icoSocial':icoSocialHistory}
+
+# convert from aggregate data to percent change
+def convertToPC(data):
+    pc = []
+
+    for i, o in enumerate(data):
+        # make sure not oldest element
+        if i > 0:
+            # in case data is zero
+            try:
+                temp = {}
+                temp['year'] = o['year']
+                temp['month'] = o['month']
+                temp['day'] = o['day']
+                #temp['num_tweets'] = ((o['num_tweets']-data[i-1]['num_tweets'])/data[i-1]['num_tweets'])*100
+                temp['num_subs'] = ((o['num_subs']-data[i-1]['num_subs'])/data[i-1]['num_subs'])
+                #temp['num_likes'] = ((o['num_likes']-data[i-1]['num_likes'])/data[i-1]['num_likes'])*100
+                temp['num_articles'] = ((o['num_articles']-data[i-1]['num_articles'])/data[i-1]['num_articles'])
+                #temp['num_trends'] = ((o['num_trends']-data[i-1]['num_trends'])/data[i-1]['num_trends'])*100
+                pc.append(temp)
+                print(temp)
+            except:
+                print('Cannot divide by zero')
+
+    return pc
 
 # returns coins a user watches
 def getWatchedCoins(uname):

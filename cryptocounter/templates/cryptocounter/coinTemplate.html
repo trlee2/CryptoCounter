@@ -105,6 +105,19 @@
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_likes}}} {% if not forloop.last %},{% endif %}
           {% endfor %}
         ]
+      },
+      {
+        type: "line",
+        axisYType: "secondary",
+        name: "Google Searches",
+        showInLegend: true,
+        markerSize: 0,
+        yValueFormatString: "#,###",
+        dataPoints: [
+          {% for d in coinSocial %}
+            { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_trends}}} {% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
       }]
     });
     chart.render();
