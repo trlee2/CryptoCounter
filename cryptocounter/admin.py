@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Coin, Ico, Price, WatchItem, WatchIco, OverallSocial, SocialCoin
+from .models import Coin, Ico, Price, WatchItem, WatchIco, OverallSocial, SocialCoin, SocialIco
 
 # Register your models here.
 admin.site.register(Coin)
@@ -11,3 +11,4 @@ admin.site.register(WatchItem)
 admin.site.register(WatchIco)
 admin.site.register(OverallSocial)
 admin.site.register(SocialCoin)
+admin.site.register(SocialIco)

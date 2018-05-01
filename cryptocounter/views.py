@@ -11,14 +11,17 @@ from .utils import *
 # Create your views here.
 def market(request):
     prices = getCurrPrices()
-    return render(request, 'cryptocounter/market.html', {'prices':prices})
+    social = getOverallSocialMonth()
+    social = convertToPC(social)
+    return render(request, 'cryptocounter/market.html', {'prices':prices, 'social':social})
 
 def ico(request):
     icoData = getIcoInfo()
     return render(request, 'cryptocounter/ico.html', {'icos':icoData})
 
 def socialTrends(request):
-    return render(request, 'cryptocounter/trends.html')
+    socialMonth = getOverallSocialMonth()
+    return render(request, 'cryptocounter/trends.html', {'socialMonth':socialMonth})
 
 def watchlist(request):
     # make sure user is logged in
@@ -96,7 +99,7 @@ def coinDetails(request, cname):
 def icoDetails(request, iname):
     icoData = getIcoDetails(iname)
     icoTweets = getICOTweets(iname)
-    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData, 'icoTweets':icoTweets['icoTweets']})
+    return render(request, 'cryptocounter/icoTemplate.html', {'ico':icoData['icoData'], 'icoSocial':icoData['icoSocial'], 'icoTweets':icoTweets['icoTweets']})
 
 def login(request):
     error = None
