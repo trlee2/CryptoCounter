@@ -199,20 +199,19 @@ def convertToPC(data):
 
     for i, o in enumerate(data):
         # make sure not oldest element
-        if i > 0:
+        if i < len(data)-1:
             # in case data is zero
             try:
                 temp = {}
                 temp['year'] = o['year']
                 temp['month'] = o['month']
                 temp['day'] = o['day']
-                #temp['num_tweets'] = ((o['num_tweets']-data[i-1]['num_tweets'])/data[i-1]['num_tweets'])*100
-                temp['num_subs'] = ((o['num_subs']-data[i-1]['num_subs'])/data[i-1]['num_subs'])
-                #temp['num_likes'] = ((o['num_likes']-data[i-1]['num_likes'])/data[i-1]['num_likes'])*100
-                temp['num_articles'] = ((o['num_articles']-data[i-1]['num_articles'])/data[i-1]['num_articles'])
-                #temp['num_trends'] = ((o['num_trends']-data[i-1]['num_trends'])/data[i-1]['num_trends'])*100
+                temp['num_tweets'] = (o['num_tweets']-data[i+1]['num_tweets'])/data[i+1]['num_tweets']
+                temp['num_subs'] = (o['num_subs']-data[i+1]['num_subs'])/data[i+1]['num_subs']
+                #temp['num_likes'] = (o['num_likes']-data[i+1]['num_likes'])/data[i+1]['num_likes']
+                temp['num_articles'] = (o['num_articles']-data[i+1]['num_articles'])/data[i+1]['num_articles']
+                #temp['num_trends'] = (o['num_trends']-data[i+1]['num_trends'])/data[i+1]['num_trends']
                 pc.append(temp)
-                print(temp)
             except:
                 print('Cannot divide by zero')
 

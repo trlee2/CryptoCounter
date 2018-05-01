@@ -35,13 +35,13 @@
 
     var chart = new CanvasJS.Chart("chartContainer", {
       title: {
-        text: "{{coin.coin_name}} Monthly Social Trends"
+        text: "{{coin.coin_name}} Monthly Social Media Trends"
       },
       axisX: {
         valueFormatString: "MMM DD"
       },
       axisY2: {
-        title: "Social Media Presence",
+        title: "Percent Change",
       },
       toolTip: {
         shared: true
@@ -59,7 +59,7 @@
         name: "Twitter Tweets",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "###0.00#%",
         dataPoints: [
           {% for d in coinSocial %}
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_tweets}}} {% if not forloop.last %},{% endif %}
@@ -72,7 +72,7 @@
         name: "Reddit Subscribers",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "###0.00#%",
         dataPoints: [
           {% for d in coinSocial %}
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_subs}}} {% if not forloop.last %},{% endif %}
@@ -85,7 +85,7 @@
         name: "News Articles",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "###0.00#%",
         dataPoints: [
           {% for d in coinSocial %}
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_articles}}} {% if not forloop.last %},{% endif %}
@@ -98,11 +98,13 @@
         name: "Facebook Likes",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "###0.00#%",
         dataPoints: [
+          /*
           {% for d in coinSocial %}
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_likes}}} {% if not forloop.last %},{% endif %}
           {% endfor %}
+          */
         ]
       },
       {
@@ -111,11 +113,13 @@
         name: "Google Searches",
         showInLegend: true,
         markerSize: 0,
-        yValueFormatString: "#,###",
+        yValueFormatString: "###0.00#%",
         dataPoints: [
+          /*
           {% for d in coinSocial %}
             { x: new Date({{d.year}},{{d.month}},{{d.day}}), y: {{d.num_trends}}} {% if not forloop.last %},{% endif %}
           {% endfor %}
+          */
         ]
       }]
     });
