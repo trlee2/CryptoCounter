@@ -31,27 +31,33 @@ numCoins = 10; #Top coins from coinMarketCap.com
 trackedCoins = [] #coins currently being tracked
 mode = []
 historyDays = 184 #default is 6 months = 184 days
-coinMarketCap = "https://api.coinmarketcap.com/v1/ticker/"
+CMC = "https://api.coinmarketcap.com/v2/"
+coinMarketCap = CMC+"ticker/"
 cryptoCompare = "https://min-api.cryptocompare.com/data/"
 cryptoCompareList = "https://www.cryptocompare.com/api/data/"
 icoWatchList = "https://api.icowatchlist.com/public/v1/" 
 newsapi = "https://newsapi.org/v2/everything?q="
-newsapi_keys = ["&apiKey=e9f31afd6dd54e14930244b5f52cdc45","&apiKey=7f9ed31f06e7459b8aa3121e437b30d3","&apiKey=4ff3432a39664cb0a21e24e63caef9bf","&apiKey=2df0257ef60d402c812c70d47c172612","&apiKey=8b211b2c69064b05a69b21989ee7e1ef","&apiKey=12ecd0af2710410dbb6a8b982cbe1f70","&apiKey=1f625b75875340b094da51d2b0c49d1a",
-"&apiKey=5e37b20fc557425aaa9ab746931d28a3",
-"&apiKey=221fb27d4dec45c09bed936b96e8255b",
-"&apiKey=c2052cc3c5da4159a014d7ec2b386028",
-"&apiKey=9cf2a84e2b864bae91ad09143833cced",
-"&apiKey=acef470a1f0f4adbb8096611667951c2",
-"&apiKey=456094da5e2f44198c1f7b0969a6b779",
-"&apiKey=ffbcf0cb9b69498a8a37c7795e174bfc",
-"&apiKey=adbfbb9684cb49f796edbe10636f2066",
-"&apiKey=d8ae5b58e68c49a08d495994d468dee6",
-"&apiKey=5795f2d93e5143a5b6168a7239249ab7",
-"&apiKey=08b323fc912548428a5252f9d517b13c",
-"&apiKey=0ae45a471f5847ff81bf0f9a96805cef",
-"&apiKey=b543fcc6eb534eec9bfc0cd7832f91f8",
-"&apiKey=1f064fa3aa2b4e9c9fc80b034f7e889a",
-
+newsapi_keys = ["e9f31afd6dd54e14930244b5f52cdc45",
+"7f9ed31f06e7459b8aa3121e437b30d3",
+"4ff3432a39664cb0a21e24e63caef9bf",
+"2df0257ef60d402c812c70d47c172612",
+"8b211b2c69064b05a69b21989ee7e1ef",
+"12ecd0af2710410dbb6a8b982cbe1f70",
+"1f625b75875340b094da51d2b0c49d1a",
+"5e37b20fc557425aaa9ab746931d28a3",
+"221fb27d4dec45c09bed936b96e8255b",
+"c2052cc3c5da4159a014d7ec2b386028",
+"9cf2a84e2b864bae91ad09143833cced",
+"acef470a1f0f4adbb8096611667951c2",
+"456094da5e2f44198c1f7b0969a6b779",
+"ffbcf0cb9b69498a8a37c7795e174bfc",
+"adbfbb9684cb49f796edbe10636f2066",
+"d8ae5b58e68c49a08d495994d468dee6",
+"5795f2d93e5143a5b6168a7239249ab7",
+"08b323fc912548428a5252f9d517b13c",
+"0ae45a471f5847ff81bf0f9a96805cef",
+"b543fcc6eb534eec9bfc0cd7832f91f8",
+"1f064fa3aa2b4e9c9fc80b034f7e889a",
 ]
 newsapi_key = 0
 
@@ -117,8 +123,10 @@ def setTrackedCoins():
 	#Use the list of tracked coins and compare with coinmarketcap
 	conn = getConnected()
 	cur = conn.cursor()
-	market = getAPI(coinMarketCap+"?limit="+str(numCoins))
-	for i in range(0, len(market)):
+	market = getAPI(coinMarketCap+"?limit="+str(numCoins))["data"]
+
+
+	for i in market.keys():
 		if(market[i]["symbol"] not in trackedCoins):
 			#TODO: find true blockchain
 			cname = market[i]["name"]
@@ -126,10 +134,10 @@ def setTrackedCoins():
 			bc = market[i]["name"]
 			terms = "[\""+market[i]["symbol"]+"\",\""+market[i]["name"]+"\"]"
 			cur.execute("INSERT INTO cryptocounter_coin (coin_name, ticker, block_chain, search_terms) VALUES('{}','{}','{}','{}')".format(cname,ticker,bc,terms))
-
 	conn.commit()
 	getTrackedCoins() #Get updated list
 	conn.close()
+
 
 '''
 Parse the JSON data from the cryptocompare API and return an array 
@@ -149,12 +157,12 @@ def parseCurrentPrice(coinList):
 			coins += ","
 
 	data = getAPI(cryptoCompare+"pricemulti?fsyms="+coins+"&tsyms=USD")
-	market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
+	market = getAPI(coinMarketCap)["data"] #TODO:fix to include if rank is > 100
 
 	prices = []
 	for key in data.keys():
 		want = {}
-		for i in range(0, len(market)):
+		for i in market.keys():
 			if(key == "IOT" and market[i]["symbol"] == "MIOTA"):
 				want = market[i]
 				break
@@ -168,9 +176,9 @@ def parseCurrentPrice(coinList):
 		else:
 			price["ticker"] = key
 		price["price"] = data[key]["USD"]
-		price["circ_supply"] = want["available_supply"]
-		price["percent_change"] = want["percent_change_24h"]
-		price["market_cap"] = want["market_cap_usd"]
+		price["circ_supply"] = want["circulating_supply"]
+		price["percent_change"] = want["quotes"]["USD"]["percent_change_24h"]
+		price["market_cap"] = want["quotes"]["USD"]["market_cap"]
 		d = time.time()
 		now = int(d-(d%86400)) #184
 		price["date"] =  now #want["last_updated"]
@@ -192,11 +200,11 @@ def parseHistoricalPrice(coinList, date):
 		if(coinList[i] == "MIOTA"):
 			cList = "IOT"
 		data = getAPI(cryptoCompare+"pricehistorical?fsym="+cList+"&tsyms=USD&ts="+str(date))
-		market = getAPI(coinMarketCap) #TODO:fix to include if rank is > 100
+		market = getAPI(coinMarketCap)["data"] #TODO:fix to include if rank is > 100
 
 		for key in data.keys():
 			want = {}
-			for j in range(0, len(market)):
+			for j in market.keys():
 				if(key == "IOT" and market[j]["symbol"] == "MIOTA"):
 					want = market[j]
 					break
@@ -210,9 +218,9 @@ def parseHistoricalPrice(coinList, date):
 			else:
 				price["ticker"] = key
 			price["price"] = data[key]["USD"]
-			price["circ_supply"] = want["available_supply"]
+			price["circ_supply"] = want["circulating_supply"]
 			price["percent_change"] = -1
-			price["market_cap"] = want["market_cap_usd"]
+			price["market_cap"] = want["quotes"]["USD"]["market_cap"]
 			price["date"] = date
 			prices.append(price)
 
@@ -322,7 +330,6 @@ Retive Facebook likes for given name
 '''	
 def getFacebook(name):
 	num = -1
-	#https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=428464434260566&client_secret=9264562884e62d1319b25bf125f6865d&fb_exchange_token=
 	at="EAACEdEose0cBAOiK6VEShZAuTPGZCZBLDFrpm2ulWBPCZBtRnFPHGjMx7PD8YrBOndrn6qglIudy5DpwiVnFIqbG6hU1VWKSJMP2RRCt6hZAwDn8oO5TTn0GXkJcuIthKpJtXRbwWGU2qp4E61e83Wsis8OUpd3sahh0clXrYA6S0TiU03hIMSXojX6JO880ZD"
 	res = getAPI("https://graph.facebook.com/"+name+"/?fields=fan_count&access_token="+at)
 	#print(res)
@@ -339,11 +346,11 @@ Loops through keys and retrives a good link for the news
 '''
 def newsAPIAdv(data):
 	global newsapi_key
-	info = getAPI(newsapi+data+newsapi_keys[newsapi_key])
+	info = getAPI(newsapi+data+"&apiKey="+newsapi_keys[newsapi_key])
 	ticker = 0
 	while(info["status"] == "error"):
 		newsapi_key = (newsapi_key+1)%len(newsapi_keys)
-		info = getAPI(newsapi+data+newsapi_keys[newsapi_key])
+		info = getAPI(newsapi+data+"&apiKey="+newsapi_keys[newsapi_key])
 		ticker += 1
 		if(ticker > len(newsapi_keys)):
 			print("ERROR: Ran out of newsapi keys, please add more or wait 6 hours to continue")
@@ -355,10 +362,7 @@ Parse the general news of cryptocurrencies and return as array.
 
 @returns	int	
 '''
-def parseGeneralNews(terms):
-	#5 calls
-	#terms = ["crypto","cryptocurrency","cryptocurrencies", "blockchain"]
-	
+def parseGeneralNews(terms):	
 	totalResults = 0;
 	tr = []
 	for t in terms:
@@ -372,17 +376,32 @@ def parseGeneralNews(terms):
 
 	return totalResults
 
+'''
+Parse the general Twitter of cryptocurrencies and return number of tweets.
+
+@returns	int	
+'''
 def parseGeneralTwitter():
 	terms = ["cryptocurrency", "blockchain"]
-	#pTweet = parseGeneralTwitter(terms)
 	num = 0;
 	for i in range(0,len(terms)):
 		num += getTwitter(terms[i])
 	return num
+
+'''
+Parse the general reddit of cryptocurrencies and return numbers of subscribers.
+
+@returns	int	
+'''
 def parseGeneralReddit():
 	return getRedditSub(["cryptocurrency"])[0]["sub"]
+	
+'''
+Parse the general facebook of cryptocurrencies and return number of likes.
+
+@returns	int	
+'''
 def parseGeneralFacebook():
-	#TODO: update/fix this
 	return getFacebook("cryptocurrency")
 	
 '''
@@ -520,6 +539,7 @@ def parseCoinFacebook(coinList):
 '''
 Parse the specific news for the ICO.
 
+@params		String[][] row
 @returns	int[]
 '''
 def parseICONews(row):
@@ -546,10 +566,14 @@ def parseICONews(row):
 		ico_dict.append(ico_inner)
 
 	return ico_dict
-	
+
+'''
+Parse the ICO twitter and return as array.
+
+@params		String[] terms
+@returns	string[]	
+'''	
 def parseICOTwitter(terms):
-	#TODO: turn back on for real data
-	print("Note: Working on ICO Twitter, this may take a long time")
 	icoList = []
 	for t in terms:
 		list = {}
@@ -557,8 +581,22 @@ def parseICOTwitter(terms):
 		list["tweets"] = getTwitter(t)
 		icoList.append(list)
 	return icoList
+	
+'''
+Parse the ICO reddit and return as array.
+
+@params		String[] terms
+@returns	string[]	
+'''	
 def parseICOReddit(terms):
 	return getRedditSub(terms)
+
+'''
+Parse the ICO Facebook and return as array.
+
+@params		String[] terms
+@returns	string[]	
+'''		
 def parseICOFacebook(terms):
 	icoList = []
 	for t in terms:
@@ -568,8 +606,11 @@ def parseICOFacebook(terms):
 		icoList.append(list)
 	return icoList
 
-### Commands to be called by CRON ###
+'''
+Insert coin price into database.
 
+@params		String[] plist
+'''	
 def addPriceInfo(plist):
 	conn = getConnected()
 	cur = conn.cursor()
@@ -598,10 +639,8 @@ def addPriceInfo(plist):
 	conn.commit()
 	conn.close()
 
-#setTrackedCoins() -> once a day
 
-def updateCurrentPrice(): #-> once every day
-	#trackedCoins should live	
+def updateCurrentPrice():
 	hour = 3600
 	day = hour * 24
 
@@ -621,9 +660,9 @@ def updateCurrentPrice(): #-> once every day
 		print("Current price added: "+ str(datetime.datetime.fromtimestamp(int(now)).strftime('%Y-%m-%d %H:%M:%S')))
 	else:
 		print("ALERT: Skipping current price, duplicate")
-		
 
-def updateHistoricalPrice(days):#-> once upon first boot or every time we need info that can not be found
+		
+def updateHistoricalPrice(days):
 	hour = 3600
 	day = hour * 24
 
@@ -651,7 +690,7 @@ def updateHistoricalPrice(days):#-> once upon first boot or every time we need i
 	#TODO: calculate %change
 	#updatePC()
 
-def updateICO():#-> once every day
+def updateICO():
 	plist = parseICO()
 	conn = getConnected()
 	cur = conn.cursor()
@@ -659,7 +698,6 @@ def updateICO():#-> once every day
 	cur.execute("SELECT ico_name FROM cryptocounter_ico")
 	DBico_raw = cur.fetchall()
 
-	#format DBico
 	DBico = []
 	for i in range(0,len(DBico_raw)):
 		DBico.append(DBico_raw[i][0])
@@ -679,7 +717,6 @@ def updateICO():#-> once every day
 	conn.close()
 	
 def updateOverallSocial():
-	#break
 	hour = 3600
 	day = 24 * hour
 	
@@ -752,9 +789,8 @@ def updateSocialCoin():
 	conn.commit()
 	conn.close()
 
-
 def updateSocialICO():
-	#break
+
 	hour = 3600
 	day = 24 * hour
 	
@@ -806,10 +842,10 @@ def updateTicker():
 	cur.execute("SELECT * FROM cryptocounter_generalmarket")
 	gm = cur.fetchall()
 	
-	cm = getAPI("https://api.coinmarketcap.com/v1/global/")
+	cm = getAPI(CMC+"global/")["data"]
 	
-	cap = cm["total_market_cap_usd"]
-	vol = cm["total_24h_volume_usd"]
+	cap = cm["quotes"]["USD"]["total_market_cap"]
+	vol = cm["quotes"]["USD"]["total_volume_24h"]
 	dom = cm["bitcoin_percentage_of_market_cap"]
 	d = cm["last_updated"]
 	dt = str(datetime.datetime.fromtimestamp(d))
@@ -915,6 +951,7 @@ def updateTwitterInfo():
 
 	'''			
 	## ICO ##
+	print("Note: Working on ICO Twitter, this may take a long time")
 	cur.execute("SELECT "+cc+"socialico.id, "+cc+"ico.ico_name, "+cc+"socialico.date FROM "+cc+"socialico INNER JOIN "+cc+"ico ON "+cc+"socialico.ico_id_id ="+cc+"ico.ico_id")
 	genICO = cur.fetchall()
 	
@@ -1043,7 +1080,7 @@ class TestCron(unittest.TestCase):
 
 	#testing API calls
 	def testA_API_CMC(self):
-		res = getAPI(coinMarketCap)
+		res = getAPI(coinMarketCap)["data"]
 		self.assertStringContains('BTC',str(res))
 		self.assertStringContains('ETH',str(res))
 		self.assertStringContains('MIOTA',str(res))
@@ -1243,7 +1280,7 @@ for currentArgument, currentValue in arguments:
 		#updateICO()
 		#updateSocialICO()
 		#updateTwitterInfo()
-		print(getFacebook("cryptocurrency"))
+		##print(getFacebook("cryptocurrency"))
 		#print(tmp)
 		### End of testing code ###
 		sys.exit(0)
