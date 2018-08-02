@@ -1,4 +1,4 @@
-CS 506 Project, Crypto Counter
+Crypto Counter
 
 <p>Python version 3.6.x</p>
 <p>Django version 2.0.x</p>
